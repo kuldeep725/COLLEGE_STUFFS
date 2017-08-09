@@ -1,0 +1,9 @@
+4
+ab
+ab
+aba
+cde
+ab
+cd
+abc
+abb
