@@ -43,11 +43,17 @@ int mostTypicalCondition (char *s, char *t) {
 
     for (i = 0; i < strlen(s); i++) {
         flag = 0;
+        //printf("strlen(t) = %d\n", (int)strlen(t));
         for (j = 0; j < strlen(t); j++) {
             if (s[i] == t[j]) {
                 flag = 1;
-                while (ptr = strchr(t, t[j]))
+                while (ptr = strchr(t, t[j])) {
+                    if (strlen(t) == 1) {
+                        ptr = NULL; 
+                        break;
+                    }
                     strcpy(ptr, ptr + 1);
+                }
                 break;
             }
         }
@@ -81,10 +87,10 @@ int main () {
         scanf("%s", t);
 
         if (strstr (t, s) != NULL) {
-            printf("1B\n");
+            printf("B\n");
         }
         else if (NoMatch (s, t)) {
-            printf("2B\n");
+            printf("B\n");
         }
         else {
             int i = 0;
@@ -95,26 +101,32 @@ int main () {
             for (i = 0; i < strlen(s); i++) {
 
                 temp[s[i]-'a']++;
-                //printf("temp[%c] = %d\n", s[i], temp[s[i]-'a']);
+                printf("temp[%c] = %d\n", s[i], temp[s[i]-'a']);
                 if (temp[s[i]-'a'] > 1) {
                     if (doesNotExist(t, s[i])) {
-                        printf("1A\n");
+                        printf("A\n");
                         flag = 0;
                         break;
                     }
-                    else {
-                        printf("Hello\n");
-                        if (mostTypicalCondition (s, t)) {
-                            flag = 0;
-                            printf("2A\n");
-                            break;
-                        }
-                    }
+                        
                 }
 
             }
+            for (i = 0; i < 26; i++) {
+
+                if (temp[i] == 1) {
+
+                    if (mostTypicalCondition (s, t)) {
+                        printf("ONES -> temp[%d] = %d\n", i, temp[i]);
+                        flag = 0;
+                        printf("A\n");
+                        break;
+                    }
+
+                }
+            }
             if (flag)
-                printf("3B\n");
+                printf("B\n");
         }
 
     }
