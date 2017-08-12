@@ -6,3 +6,69 @@
 5
 1
 7
+/*
+/*for stacks
+    node *head = (node *) malloc(sizeof(node));
+    scanf("%d ", &(head->data));
+    node *start = head;
+    head->next = NULL;
+
+    int i;
+
+    for (i = 1; i < n; i++) {
+
+        node *p = (node *) malloc(sizeof(node));
+        scanf("%d ", &(p->data));
+        printf("Data : %d\n", p->data);
+        p->next = start;
+        start = p;
+
+    }
+    return start;*/
+ */
+student * insertData (student *start, int val, int newData) {
+
+	student *p = start;
+	int flag = 0;
+	student *temp;
+
+	do {
+
+		temp = p->next;
+		if (p->data == val) {
+			flag = 1; 
+			break;
+		}
+
+		p = p->next;
+	} while(p != NULL);
+
+	if (flag) {
+
+		student *addNote = (student *) malloc(sizeof(student));
+		addNote->data = newData;
+
+		if (temp != NULL) {
+
+			addNote->next = temp;
+			addNote->prev = p;
+			p->next = addNote;
+			temp->prev = addNote;
+
+		}
+
+		else {
+
+			addNote->prev = p;
+			addNote->next = NULL;
+			p->next = addNote;
+
+		}
+		return start;
+
+	}
+	else {
+		return NULL;
+	}
+
+}
