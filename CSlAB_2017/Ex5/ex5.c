@@ -27,6 +27,7 @@ void displayData (student *);
 student * insertData (student *, int , int );
 student * deleteData (student *, int );
 student * reverseData (student *);
+void freeMemory (student *);
 
 
 /*MAIN FUNCTION BEGINS*/
@@ -35,29 +36,31 @@ int main(int argc, char const *argv[]) {
 	int N;
 	int val;
 	int newData;
+	printf("ENTER NUMBER OF ELEMENTS : \n");
 	scanf("%d", &N);
 
+	printf("ENTER %d ELEMENTS :\n", N);
 	student *start = createStudent (N);			   //creating student structure and returning head pointer
-	printf("start->data : %d\n", start->data);
-	printf("The Initial State : \n");
+	//printf("start->data : %d\n", start->data);
+	printf("THE INITIAL STATE : \n");
     displayData(start);
 
-    printf("Enter val : ");
+    printf("ENTER THE ELEMENT AFTER WHICH ELEMENT IS TO BE INSERTED : ");
     scanf("%d", &val);
-    printf("Enter the value to be inserted : ");
+    printf("ENTER THE ELEMENT TO BE INSERTED : ");
     scanf("%d", &newData);
 
     start = insertData (start, val, newData);			
     if (start != NULL) {                             //checking if element exists or not
 
         printf("\nINSERTION DONE SUCCESSFULLY!!\n\n");
-        printf("The State after Insertion : \n");
+        printf("THE STATE AFTER INSERTION : \n");
         displayData (start);
 
         start = deleteData (start, val);
         if (start != NULL) {
             printf("\nDELETION DONE SUCCESSFULLY!!\n\n");
-            printf("The State after Deletion : \n");
+            printf("THE STATE AFTER DELETION : \n");
             displayData (start);
         }
         else {
@@ -74,9 +77,9 @@ int main(int argc, char const *argv[]) {
     if (start != NULL) {
 
         start = reverseData (start);
-        printf("The State after Reversion : \n");
+        printf("THE STATE AFTER REVERSION : \n");
         displayData (start);
-        free(start);
+        freeMemory(start);
 
     }
 
@@ -269,6 +272,23 @@ student * reverseData (student *start) {
 	} while (p != NULL);
 
 	return start;		//returning start of the node
+
+}
+
+//function to free all the memory
+void freeMemory (student *head) {
+
+    student *p = head;
+    student *temp;
+    do {
+
+        temp = p;
+        p = p->next;
+        temp->next = NULL;
+        temp->prev = NULL;
+        free(temp);
+
+    } while (p != NULL);
 
 }
 /*SAMPLE OUTPUT : 

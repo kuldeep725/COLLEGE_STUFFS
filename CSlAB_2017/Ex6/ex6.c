@@ -33,7 +33,7 @@ node * createNode (int n) {
     for (i = 1; i < n; i++) {
 
         node *p = (node *) malloc(sizeof(node));
-        scanf("%d ", &(p->data));        //entering the data
+        scanf("%d", &(p->data));        //entering the data
         end->next = p;
         end = p;
 
@@ -123,10 +123,12 @@ int main () {
     int N;      //number of elements in node 1
     int M;      //number of elements in node 2
     node *headMerged = NULL;
+    printf("ENTER NUMBER OF ELEMENTS IN NODE1 AND NODE2 (e.g. 7 5)\n");
+    scanf("%d %d", &N, &M);   //entering value of N & M
 
-    scanf("%d %d\n", &N, &M);   //entering value of N & M
-
+    printf("ENTER %d ELEMENTS FOR FIRST NODE\n", N);
     node *head1 = createNode(N);        //creating first Node
+    printf("ENTER %d ELEMENTS FOR SECOND NODE\n", M);
     node *head2 = createNode(M);        //creating second Node
 
     printf("FIRST NODE IS : \n");

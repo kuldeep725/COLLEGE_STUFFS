@@ -13,7 +13,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-//creating structure student to store students' informations
+//creating structure student to store students' informations (single linked list)
 typedef struct student {
 
     int data;
@@ -182,6 +182,21 @@ student * reverseData (student *head, int N) {
     return p;
 
 }
+//function to free all the memory
+void freeMemory (student *head) {
+
+    student *p = head;
+    student *temp;
+    do {
+
+        temp = p;
+        p = p->next;
+        temp->next = NULL;
+        free(temp);
+
+    } while (p != NULL);
+
+}
 
 int main () {
 
@@ -227,7 +242,7 @@ int main () {
         head = reverseData (head, N);
         printf("The State after Reversion : \n");
         displayData (head);
-        free(head);
+        freeMemory(head);
 
     }
 

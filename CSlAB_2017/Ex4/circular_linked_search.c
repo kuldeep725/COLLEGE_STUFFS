@@ -16,16 +16,16 @@ typedef struct node {
 	struct node *next;
 	struct node *prev;
 
-} node;
+} node;		//creating alias for struct node
 
-//creating the node
+//creating the node of size N
 node * createNode (int N) {
 
-	node *head = (node *) malloc(sizeof(node));
+	node *head = (node *) malloc(sizeof(node));		//giving memory to the head of the node
 
 	int value;
 	printf("Enter data : ");
-	scanf("%d", &value);
+	scanf("%d", &value);		//entering data
 	head->data = value;
 	head->prev = NULL;
 	head->next = NULL;
@@ -35,12 +35,12 @@ node * createNode (int N) {
 	int i;
 	for (i = 1; i < N; i++) {
 
-		scanf("%d", &value);
+		scanf("%d", &value);						//entering data
 		node *p = (node *) malloc(sizeof(node));
 		p->data = value;
 
 		if (i != 1) {
-			p->prev = t;		
+			p->prev = t;					//checking if the element is head or not
 		}
 
 		t->next = p;
@@ -48,13 +48,13 @@ node * createNode (int N) {
 
 	}
 
-	head->prev = t;
-	t->next = head;
+	head->prev = t;			//setting head->prev to last element
+	t->next = head;			//setting last element->next to head of the node
 	return head;		//returning head pointer
 
 }
 
-//display the data
+//display the data of the node
 void display (node *head) {
 
 	node *p = head;
@@ -75,7 +75,7 @@ int IsElementThere (node *head, int ele) {
 	int success = 0;
 
 	do {
-		if (p->data == ele) {
+		if (p->data == ele) {		//check if element is equal to the data in the node 
 			success = 1;
 			break;
 		}
@@ -87,6 +87,27 @@ int IsElementThere (node *head, int ele) {
 
 }
 
+//function to free all the memory
+void freeMemory (node *head) {
+
+    node *p = head->next;
+    node *temp;
+
+    do {
+
+        temp = p;			//storing p in temporary pointer 'temp'
+        p = p->next;		//going to next pointer 
+        temp->next = NULL;
+        temp->prev = NULL;
+        free(temp);			//free up the memory
+
+    } while (p != head);
+
+    free(head);		//freeing head at the last since head is needed in the loop condition
+
+}
+
+//MAIN FUNCTION BEGINS
 int main () {
 
 	int N;
@@ -99,7 +120,9 @@ int main () {
 	printf("ENTER THE SEARCH ELEMENT : \n");
 	scanf("%d", &searchElement);			//entering the search Element
 	printf("SEARCHING THE ELEMENT %d IN THE LIST : \n", searchElement);
-	if (IsElementThere (head, searchElement)) {
+	printf("...\n");
+	printf("...\n");
+	if (IsElementThere (head, searchElement)) {			//checking if the element exists or not
 
 		printf("BINGO  !! The element %d exists.\n", searchElement);
 
@@ -107,7 +130,11 @@ int main () {
 	else {
 		printf("SORRY !! The element %d doesn't exist.\n", searchElement);
 	}
+	if (head != NULL) {			//checking if the head is NULL or not
+		freeMemory (head);		//free the memory
+	}	
 
 	return 0;
 
 }
+//MAIN FUNCTION ENDS
