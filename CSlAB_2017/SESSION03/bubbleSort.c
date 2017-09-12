@@ -21,11 +21,11 @@ void bubbleSort (int *a, int n) {
                 a[j] = temp;
             }
         }
-        /*
+
         for (j = 0; j < n; j++) {
             printf("%d->", a[j] );
         }
-        printf("\n");*/
+        printf("\n");
     }
 
 }
