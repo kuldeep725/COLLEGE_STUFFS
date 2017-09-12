@@ -15,7 +15,7 @@ void bubbleSort (int *a, int n) {
         for (j = 0; j < n - i - 1; j++) {
 
             //swapping the elements if upcoming element is smaller than the present element
-            if (a[j+1] < a[j]) {
+            if (a[j+1] > a[j]) {
                 temp = a[j+1];
                 a[j+1] = a[j];
                 a[j] = temp;
