@@ -2,15 +2,14 @@
 
     * Name      : Kuldeep Singh Bhandari
     * Roll No.  : 111601009
-    * Date      : 04-10-2017
-    * Aim       : To check if the root and destination node are connected or not, if connected
-    			  then find the shortest path between them and write output file showing edges of this path
-    			  by red color
+    * Date      : 09-10-2017
+    * Aim       : to find longest shortest path in a graph
+    * NOTE  	: Can be found only on connected graph (noOfComponents = 1)
 */
 #include<stdio.h>
+#include<limits.h>
 #include<string.h>
 #include<stdlib.h>
-#include<limits.h>
 
 #define MAX 32
 #define RANDOM 5
@@ -116,7 +115,6 @@ int queueIsEmpty () {
         return 0;
 	}
 }
-
 //to search if root and dest are connected or not
 int isNodesConnected (int root, int dest) {
 
@@ -165,53 +163,6 @@ void readAdjacentMatrix () {
         }
         printf("\n");
     }*/
-
-}
-
-//to make dot file from the given adjacency matrix
-void makeDotFile () {
-
-    char one[32];
-    strcpy(one, s1);
-    char str[32];
-   	strcpy(str, s1);
-    strcat(str, ".dot");
-    fpWrite = fopen(str, "w");                   //creating/ opening a file to write dot form of the adjacency matrix
-    //NOW WE START WRITING DATA IN THE FILE
-
-    fprintf(fpWrite, "graph %s {\n", one);
-
-    int i,j;
-    int check;
-
-    for (i = 0; i < n; i++) {
-        check = 0;              //TO CHECK IF INCOMING NODE IS CONNECTED TO ANYONE OR NOT
-        for (j = i; j < n; j++) {
-            if (a[i][j] == 1) {
-                fprintf(fpWrite, "      ");
-                fprintf(fpWrite, "%d -- %d ", i, j);
-                if (j == n -1 && i == n-1) {
-                    fprintf(fpWrite, "\n");
-                }
-                else {
-                    fprintf(fpWrite, ";\n");
-                }
-                check = 1;
-            }
-        }
-        if (check == 0) {       //IF NODE IS NOT CONNECTED TO ANYONE
-            fprintf(fpWrite, "      ");
-            fprintf(fpWrite, "%d ", i);
-
-            if (i != n -1) {
-                fprintf(fpWrite, ";\n");
-            }
-            else {
-                fprintf(fpWrite, "\n");
-            }
-        }
-    }
-    fprintf(fpWrite, "}");
 
 }
 //to find out node which is nearest to u and unvisited(in this case, neighbours of u)
@@ -263,7 +214,7 @@ void findShortestPath (int root, int dest) {
 	int checkVisited[32] = {0};		//initializing every vertex to be unvisited
 
 	parent[root] = -1;				//since root node doesn't have any parent node
-	printf("root = %d && dest = %d\n", root, dest);
+	//printf("root = %d && dest = %d\n", root, dest);
 	for (i = 0; i < n; i++) {
 		dist[i] = INT_MAX - 1;  //setting every distance to be int_max - 1
 	}
@@ -296,6 +247,118 @@ void findShortestPath (int root, int dest) {
 		printSolution (root, dest, dist, parent);			//printing shortest path between root and destination
 	}
 
+}
+
+int getShortestDistance (int root, int dest) {
+
+
+	int dist[32];					//to store shortest distance of every vertex from root
+
+	int parent[32];					//to store parent node of every nodes
+	int i,j;						//loop counters
+	int checkVisited[32] = {0};		//initializing every vertex to be unvisited
+
+	parent[root] = -1;				//since root node doesn't have any parent node
+	//printf("root = %d && dest = %d\n", root, dest);
+	for (i = 0; i < n; i++) {
+		dist[i] = INT_MAX - 1;  //setting every distance to be int_max - 1
+	}
+	dist[root] = 0;				// Distance of root node from itself is always 0
+	int flag = 0;				//to check if last numbered node is the destination node
+	// Update dist value of the adjacent vertices of the picked vertex.
+	for (i = 0; i < n - 1; i++) {
+
+		int u = minDistance (root, dist, checkVisited);		//to find out node which is nearest to u and unvisited(in this case, neighbours of u)
+		//printf("\nu = %d\n", u);
+		checkVisited[u] = 1;					//marking u to be a visited node
+
+		for (j = 0; j < n; j++) {
+			if (!checkVisited[j] && a[u][j] && dist[u] + a[u][j] < dist[j]) {
+
+				parent[j] = u;					//making u to be parent node of j
+				dist[j] = dist[u]+a[u][j];		//setting new distance for node j
+				/*printf("parent[%d] = %d\n", j, u);
+				printf("dist[%d] = %d\n", j, dist[j]);*/
+
+			} 
+		}
+		if (u == dest) {
+			return dist[dest];
+		}
+	}
+	if (flag == 0){
+			return dist[dest];
+	}
+
+
+}
+
+int calculateConnectedComponents (int a[][32]){
+
+	int counter = 0;						//to calculate the number of connected components
+	int i,j;
+	int z;
+	int checked[32] = {0};
+	int component[32][32];
+	int k[32];
+	int last = 0;
+	int lastArray[32][32];
+	/*printf("Counter before i loop = %d\n", counter);
+	printf("n = %d\n", n);*/
+	for (i = 0; i < n; i++) {
+
+		// printf("1.counter = %d\n", counter);
+		// printf("checked[%d] = %d\n", i, checked[i]);
+		if (checked[i] == 1) continue;
+		k[counter] = 0;
+		counter++;
+		
+		// printf("2.counter = %d\n", counter);
+
+		for (j = i+1; j < n; j++) {
+
+			if (checked[j] == 1) continue;
+			// printf("checking Nodes between %d and %d : \n", i, j);
+			if (isNodesConnected(i,j)) {
+
+				//printf("%d and %d are connected.\n", i, j);
+				if (checked[i] != 1) {
+					component[counter-1][k[counter-1]]=counter-1;
+					//printf("counter[%d][%d] = %d \n", counter-1, k[counter-1], component[counter-1][k[counter-1]]);
+					lastArray[counter-1][k[counter-1]]=i;
+					k[counter-1]++;
+				}
+				if (checked[j] != 1) {
+					component[counter-1][k[counter-1]]=counter-1;
+					//printf("counter[%d][%d] = %d \n", counter-1, k[counter-1], component[counter-1][k[counter-1]]);
+					lastArray[counter-1][k[counter-1]]=j;
+					k[counter-1]++;
+				}
+				checked[i] = 1;
+				checked[j] = 1;
+				
+			}
+			
+		}
+		// printf("k[%d] = %d\n", counter-1, k[counter-1]);
+		
+
+	}
+
+	return counter;
+}
+
+
+int getLongestShortestPath (int b[]) {
+
+	int i, j;
+	int maximumDistance = b[0];
+	for (i = 0; i < n; i++) {
+		if (b[i] > maximumDistance) {
+			maximumDistance = b[i];
+		}
+	}
+	return maximumDistance;
 
 }
 //to create colored dot file
@@ -305,7 +368,7 @@ void makeColoredDotFile () {
     strcpy(one, s1);
    	char str[32];
    	strcpy(str, s1);
-    strcat(str, "Colored.dot");
+    strcat(str, "ColoredFarthest.dot");
     fpWrite = fopen(str, "w");                   //creating/ opening a file to write dot form of the adjacency matrix
     //NOW WE START WRITING DATA IN THE FILE
 
@@ -348,13 +411,44 @@ void makeColoredDotFile () {
 
 }
 
+void calculateShortestDistanceBetweenAllNodes (int b[]) {
+
+	int i, j;
+	int k = 0;
+
+	for (i = 0; i < n; i++) {
+		for (j = i+1; j < n; j++) {
+			b[k] = getShortestDistance (i,j);
+			k++;
+		}
+	}
+
+} 
+
+void showLongestShortestPath (int x, int b[]) {
+
+	int i,j;
+	int k = 0;
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < n; j++) {
+			if (getShortestDistance(i,j) == x) {
+				findShortestPath (i,j);
+				return;
+			}
+		}
+	}
+
+}
+
 //MAIN BEGINS HERE
 int main () {
-
-    char fileName[55];
-    int root;								//Root Node
-    int dest;								//Destination Node
-    printf("ENTER FILE NAME : \n");
+	
+	int a[32][32];
+	int n;
+	char fileName[55];
+	int b[64];
+	int nearestFarthestNodes[32][32];
+	printf("ENTER FILE NAME : \n");
     scanf("%s", fileName);					//asking user for input file name
     fpRead = fopen(fileName,"r");
     if (fpRead == 0) {
@@ -362,22 +456,15 @@ int main () {
         return 1;							//returning 1 since program didn't work
     }
     readAdjacentMatrix();					//reading adjacent matrix
-    makeDotFile();							//creating dot file
-    printf("Enter the ROOT node :  \n");
-    scanf("%d", &root);						//asking user to input root node
-    printf("Enter the DESINATION node : \n");		
-    scanf("%d", &dest);						//asking user to input destination node
-    int status = isNodesConnected (root, dest);		//checking if root and destination are connected
-    if (status == 1) {						//if root and destination are connected
-        printf("%d & %d are connected.\n", root, dest);
-        findShortestPath (root, dest);		//finding shortest path between root and destination
-        printf("\n");
-        makeColoredDotFile();				//creating colored dot file
-    }
-    else {
-        printf("%d & %d are not connected.\n", root, dest);			//if root and destination are not connected
-    }
-    
-    return 0;
+    int numberOfComponents = calculateConnectedComponents(a);
+    printf("numberOfComponents = %d\n", numberOfComponents);
+	if (numberOfComponents == 1) {			//minimum longest shortest path can be found only in connected graph 
+		calculateShortestDistanceBetweenAllNodes (b);
+		int longestShortestPath = getLongestShortestPath(b);
+		printf("longestShortestPath = %d\n", longestShortestPath); 
+		showLongestShortestPath (longestShortestPath, b);
+		makeColoredDotFile ();
+	}
+	return 0;
 }
 //MAIN ENDS HERE

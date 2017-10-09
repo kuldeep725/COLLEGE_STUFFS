@@ -1,0 +1,14 @@
+graph seven {
+      0 -- 1 [color=red] ;
+      1 -- 2 [color=red] ;
+      1 -- 9 [color=red] ;
+      2 ;
+      3 -- 4 [color=green] ;
+      3 -- 5 [color=green] ;
+      4 -- 5 [color=green] ;
+      5 ;
+      6 -- 8 [color=blue] ;
+      7 -- 8 [color=blue] ;
+      8 ;
+      9 
+}
