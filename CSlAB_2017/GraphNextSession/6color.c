@@ -2,8 +2,8 @@
 
     * Name      : Kuldeep Singh Bhandari
     * Roll No.  : 111601009
-    * Date      : 10-10-2017
-    * Aim       : To find Eulerian Circuit of a given adjacent matrix if Eulerian Circuit exists
+    * Date      : 16-10-2017
+    * Aim       : To color a planar graph with 6 colors
 */
 #include<stdio.h>
 #include<stdlib.h>
@@ -216,48 +216,102 @@ void makePlanarDotFile (char color[][20], int colorArray[]) {
         }
     }
     fprintf(fpWrite, "}");
+    printf("DOT FILE IS CREATED SUCCESSFULLY...\n");
 
 }
 
+//to check if given vertex has a different color than its adjacent vertices
+int isDistinct (int vertex, int colorArray[]) {
+
+	int i, j;
+	for (i = 0; i < n; i++) {
+
+		if (a[vertex][i] == 1) {
+			//printf("(%d, %d) => [%d, %d]\n",vertex, i, colorArray[vertex], colorArray[i]);
+			if (colorArray[i] >= 10 || colorArray[i] <= -1) continue;
+			if (colorArray[i] == colorArray[vertex]) 
+				return 0;			//return 0 in case adjacent vertex has the same color
+		}
+	}
+	//printf("\n");
+	return 1;
+}
+
+//to color planar graph
 void colorPlanarGraph (int isColored[], char color[][20], int colorArray[]) {
 
 	int i, j;
-	int k = -1;
+	int k = -1;					//to switch to different colors in array color[][20]
 	for (i = 0; i < n; i++) {
-		int child[32];
-		int count = 0;
-		for (j = i; j < n; j++) {
-			if (isNodesConnected(i, j)) {
-				child[count++] = j;
+		int child[32];			//to store adjacent vertices of vertex i
+		int count = 0;			//to count number of adjacent vertices of vertex i
+		//printf("i = %d\n", i);
+		for (j = 0; j < n; j++) {
+			if (a[i][j] == 1) {			
+				child[count++] = j;			//storing adjacent vertices of i into an array child
 			}
 		}
 		int t;
+		/*for (j = 0; j < count; j++) {
+			printf("child[%d] = %d, colorArray[%d] = %d\n", j, child[j], i, colorArray[i]);
+			if (colorArray[j] >= 10 || colorArray[j] <= -1) continue;
+			printf("colorArray[%d] = %d\n", child[j], colorArray[j]);
+		}*/
 		for (j = 0; j < count; j++) {
-			for (t = j; t < count; t++) {
-				if (isNodesConnected(j, t)) {
-					if (!isColored[j]) {
-						isColored[j] = 1;
-						colorArray[j] = ++k % NOC;
+			for (t = 0; t < count; t++) {
+
+				if (a[child[j]][child[t]] == 1) {
+
+					if (!isColored[child[j]]) {			//check if child[j] is colored or not
+						isColored[child[j]] = 1;		//mark it colored
+						colorArray[child[j]] = ++k % NOC;		//assign colorArray of child[j]
 					}
-					if (!isColored[t]) {
-						isColored[t] = 1;
-						colorArray[t] = ++k % NOC;
+					//printf("FOR %d vertex : \n", child[j]);
+					while (!isDistinct(child[j], colorArray)) {		//checking if vertex has distinct color or not
+						//printf("FOR %d vertex : \n", child[j]);
+						colorArray[child[j]] = ++k % NOC;
+					}
+					if (!isColored[child[t]]) {			//check if child[t] is colored or not
+						isColored[child[t]] = 1;		//mark it colored
+						colorArray[child[t]] = ++k % NOC;		//assign colorArray of child[t]
+						
+					}
+					//printf("FOR %d vertex : \n", child[t]);
+					while (!isDistinct(child[t], colorArray)) {		//checking if vertex has distinct color or not
+						//printf("FOR %d vertex : \n", child[t]);
+						colorArray[child[t]] = ++k % NOC;
 					}
 				}
 				else {
 					++k;
-					if (!isColored[j]) {
-						isColored[j] = 1;
-						colorArray[j] = k % NOC;
+					if (!isColored[child[j]]) {			//check if child[j] is colored or not
+						isColored[child[j]] = 1;		//mark it colored
+						colorArray[child[j]] = k % NOC;		//assign colorArray of child[j]
+						
 					}
-					if (!isColored[t]) {
-						isColored[t] = 1;
-						colorArray[t] = k % NOC;
+					while (!isDistinct(child[j], colorArray)) {			//checking if vertex has distinct color or not
+						colorArray[child[j]] = ++k % NOC;
+					}
+					if (!isColored[child[t]]) {			//check if child[t] is colored or not
+						isColored[child[t]] = 1;		//mark it colored
+						colorArray[child[t]] = k % NOC;  	//assign colorArray of child[t]
+						
+					}
+					while (!isDistinct(child[t], colorArray)) {			//checking if vertex has distinct color or not
+						colorArray[child[t]] = ++k % NOC;
 					}
 				}
 			}
 			
 		}
+		if (!isColored[i]) {
+			isColored[i] = 1;
+			colorArray[i] = ++k % NOC;
+		}
+		//printf("colorArray[%d] = %d\n", i, colorArray[i]);
+	}
+	for (i = 0; i  < n; i++) {
+		//printf("colorArray[%d] = %d\n", i, colorArray[i]);
 	}
 	makePlanarDotFile (color, colorArray);
 
@@ -281,8 +335,7 @@ int main () {
         return 1;							//returning 1 since program didn't work
     }
     readAdjacentMatrix ();
-    colorPlanarGraph (isColored, color, colorArray);
-
+    colorPlanarGraph (isColored, color, colorArray);		//to color planar graph
 
      return 0;
 }
