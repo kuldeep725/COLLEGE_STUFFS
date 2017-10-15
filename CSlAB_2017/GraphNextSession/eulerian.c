@@ -3,7 +3,7 @@
     * Name      : Kuldeep Singh Bhandari
     * Roll No.  : 111601009
     * Date      : 10-10-2017
-    * Aim       :
+    * Aim       : To find Eulerian Circuit of a given adjacent matrix if Eulerian Circuit exists
 */
 #include<stdio.h>
 #include<stdlib.h>
@@ -147,6 +147,7 @@ int isNodesConnected (int root, int dest) {
     return 0;
 }
 
+//to check if any edges left between any vertices
 int haveEdgesLeft () {
     int i,j;
     for (i = 0; i < n; i++) {
@@ -154,13 +155,14 @@ int haveEdgesLeft () {
             if (a[i][j] == 1) {
                 return 1;
             }
-            printf("%d ", a[i][j]);
+            //printf("%d ", a[i][j]);
         }
-        // printf("\n");
+        //printf("\n");
     }
     return 0;
 }
 
+//to display eulerian path
 void displayEulerianPath (path *start) {
 
     path *p = start;
@@ -175,7 +177,27 @@ void displayEulerianPath (path *start) {
 
 }
 
-int max (int connectedArray[], int m, int degree[]) {
+/*int oneMoreThanOther (int p, int q, int degree[]) {
+
+	int degree1 = 0, degree2 = 0;
+	int i,j;
+	for (i = 0; i < n; i++) {
+		if (a[p][i] == 1) {
+			degree1 += degree[i];
+		}
+		if (a[q][i] == 1) {
+			degree2 += degree[i];
+		}
+	}
+	printf("degree1 = %d\n", degree1);
+	printf("degree2 = %d\n", degree2);
+	printf("degree1 > degree2 = %d\n", degree1 > degree2);
+	return (degree1 > degree2);
+
+}*/
+
+
+/*int max (int connectedArray[], int m, int degree[]) {
 
 	int maxIndex = connectedArray[0];
 	int i;
@@ -183,10 +205,18 @@ int max (int connectedArray[], int m, int degree[]) {
 		if (degree[connectedArray[i]] > degree[maxIndex]) {
 			maxIndex = connectedArray[i];
 		}
+		else if (degree[connectedArray[i]] == degree[maxIndex]) {
+			printf("Maximum off : (connectedArray[%d], connectedArray[%d])\n", connectedArray[i], connectedArray[maxIndex]);
+			if (oneMoreThanOther(connectedArray[i], connectedArray[maxIndex], degree)){
+				
+				maxIndex = connectedArray[i];
+			}
+		}
 	}
+	printf("maxIndex = %d\n", maxIndex);
 	return maxIndex;
 
-}
+}*/
 
 void findEulerianCircuit (path *start, int checked[], int degree[]) {
 
@@ -197,28 +227,24 @@ void findEulerianCircuit (path *start, int checked[], int degree[]) {
     rear = NULL;
     //printf("start->vertex = %d\n", start->vertex);
     int root = start->vertex;
-    enQueue (start->vertex);
+    enQueue (root);
     int i;
-    int j = 0;
-    int count;
-    int connectedArray[100];
+    //int j = 0;
+    /*int count;
+    int connectedArray[100];*/
     
     while(degree[root] != 0) {
         int currentNode = deQueue ();
         int flag = 0;
         int k = 0;
-        /*printf("currentNode = %d\n", currentNode);
-        printf("degree[%d] = %d\n", root, degree[root]);*/
-        count++;
-        /*if (count == 5) {
-        	break;
-        }*/
+       // printf("currentNode = %d\n", currentNode);
+        //printf("degree[%d] = %d\n", root, degree[root]);
         for (i = 0; i < n; i++) {
             //count = 0;
             if (a[currentNode][i] == 1) {
                     
-                    /*printf("a[%d][%d] = %d\n", currentNode,i, a[currentNode][i]);
-                    printf("degree[%d] = %d, degree[%d] = %d\n", currentNode, degree[currentNode], i, degree[i]);*/
+                    //printf("a[%d][%d] = %d\n", currentNode,i, a[currentNode][i]);
+                   // printf("degree[%d] = %d, degree[%d] = %d\n", currentNode, degree[currentNode], i, degree[i]);
                     if (i == root) {
                     	if (degree[currentNode] == 1) {
                     		enQueue(i);
@@ -238,29 +264,22 @@ void findEulerianCircuit (path *start, int checked[], int degree[]) {
                     	
                     }
                     else {
-                    	connectedArray[k++] = i; 
+                    	enQueue(i);
+			        	p = (path *) malloc(sizeof(path));
+			            p->vertex = i;
+			            temp->next = p;
+			            temp = p;
+			        	a[currentNode][i] = 0;
+			    		a[i][currentNode] = 0;
+			    		degree[currentNode]--;
+			   			degree[i]--;
+			   			break;
+                    	//connectedArray[k++] = i; 
                     	//printf("connectedArray[%d] = %d\n", k-1,connectedArray[k-1]);
                     }
                    
         	}
             
-        }
-        /*if (degree[root] == 0) {
-        	break;
-        }*/
-        if (flag == 0 && degree[root] != 0) {
-        	int index = max (connectedArray, k, degree);
-        	//printf("degree[%d] = %d \n", index, degree[index]);
-        	//printf("index = %d \n", index);
-        	enQueue(index);
-        	p = (path *) malloc(sizeof(path));
-            p->vertex = index;
-            temp->next = p;
-            temp = p;
-        	a[currentNode][index] = 0;
-    		a[index][currentNode] = 0;
-    		degree[currentNode]--;
-   			degree[index]--;
         }
 
 	}
@@ -286,8 +305,8 @@ void freeNode (path *start) {
         free(temp);
 
     } while (p != start);
-    /*printf("START->vertex = %d\n", start->vertex);
-    free(start);*/
+    //printf("START->vertex = %d\n", start->vertex);
+    free(start);
 
 }
 int calculateConnectedComponents (){
@@ -398,6 +417,7 @@ void markAllZeroDegreeVertexAsVisited (int checked[]) {
     }
 }
 
+//setting degrees of all vertices
 void setDegrees (int degree[]) {
 
 	int i, j;
@@ -411,16 +431,22 @@ void setDegrees (int degree[]) {
 
 }
 
+//MAIN BEGINS HERE
 int main () {
 
-    int startingNode;
-    char fileName[55];
-    int checked[32] = {0};
-    int degree[32];
+    int startingNode;						//starting Node for eulerian path
+    char fileName[55];						//storing name of the file
+    int checked[32] = {0};					//setting all vertices to be initially unchecked
+    int degree[32];							//to store degree of all vertices
 
 	printf("ENTER FILE NAME : \n");
     scanf("%s", fileName);					//asking user for input file name
     fpRead = fopen(fileName,"r");
+
+    if (fpRead == 0) {
+        printf("ERROR IN FILE OPENING.\n");			//error in file opening
+        return 1;							//returning 1 since program didn't work
+    }
 
     printf("Enter the starting Node : \n");
     scanf("%d", &startingNode);
@@ -428,18 +454,14 @@ int main () {
     start->vertex = startingNode;
     start->next = NULL;
 
-    if (fpRead == 0) {
-        printf("ERROR IN FILE OPENING.\n");			//error in file opening
-        return 1;							//returning 1 since program didn't work
-    }
     readAdjacentMatrix();					//reading adjacent matrix
-    if (isDegreeEven()) {
+    if (isDegreeEven()) {					//if all degrees are even
         printf("Degrees are Even\n");
         markAllZeroDegreeVertexAsVisited (checked);
         setDegrees(degree);
         if (calculateConnectedComponents() == 1) {
             printf("EULERIAN PATH EXISTS\n");
-            findEulerianCircuit (start, checked, degree);
+            findEulerianCircuit (start, checked, degree);		//printing eulerian path
         }
 
     }
@@ -449,3 +471,4 @@ int main () {
     if (start != NULL) {freeNode(start);}
     return 0;
 }
+//MAIN ENDS HERE
