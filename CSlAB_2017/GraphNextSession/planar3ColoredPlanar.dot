@@ -22,14 +22,14 @@ graph planar3 {
       7 ;
       8 ;
       9 ;
-      0 [color=red, style=filled];
+      0 [color=yellow, style=filled];
       1 [color=blue, style=filled];
       2 [color=green, style=filled];
       3 [color=magenta, style=filled];
-      4 [color=yellow, style=filled];
-      5 [color=darkorange4, style=filled];
+      4 [color=green, style=filled];
+      5 [color=yellow, style=filled];
       6 [color=green, style=filled];
       7 [color=magenta, style=filled];
       8 [color=yellow, style=filled];
-      9 [color=yellow, style=filled]
+      9 [color=red, style=filled]
 }

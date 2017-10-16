@@ -19,12 +19,12 @@ graph planar2 {
       9 ;
       0 [color=darkorange4, style=filled];
       1 [color=blue, style=filled];
-      2 [color=red, style=filled];
+      2 [color=magenta, style=filled];
       3 [color=green, style=filled];
       4 [color=magenta, style=filled];
-      5 [color=green, style=filled];
-      6 [color=magenta, style=filled];
+      5 [color=yellow, style=filled];
+      6 [color=yellow, style=filled];
       7 [color=yellow, style=filled];
-      8 [color=blue, style=filled];
-      9 [color=yellow, style=filled]
+      8 [color=green, style=filled];
+      9 [color=darkorange4, style=filled]
 }
