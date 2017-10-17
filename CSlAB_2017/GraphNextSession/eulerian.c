@@ -190,9 +190,11 @@ void findEulerianCircuit (path *start, int checked[]) {
             printf("\n");
             int currentNode = deQueue ();
             int flag = 0;
+            int index = 0;
+            count = 0;
             printf("currentNode = %d\n", currentNode);
             for (i = 0; i < n; i++) {
-                count = 0;
+
                 if (a[currentNode][i] == 1) {
                         enQueue(i);
                         p = (path *) malloc(sizeof(path));
@@ -203,17 +205,13 @@ void findEulerianCircuit (path *start, int checked[]) {
                             flag = 1;
                         }
                         else {
-                            a[currentNode][i] = 0;
-                            a[i][currentNode] = 0;
-                            printf("a[%d][%d] = %d\n", currentNode, i, a[currentNode][i]);
-                            printf("%d --> %d\n", temp->vertex, p->vertex );
+                            index = i;
                             //printf("temp->vertex = %d\n", temp->vertex);
 
                         }
                         temp = p;
                         count++;
                         //printf("p->vertex = %d\n", p->vertex);
-                        break;
                 }
                 /*if (i == n-1 && haveEdgesLeft()) {
                     i = 0;
@@ -225,9 +223,14 @@ void findEulerianCircuit (path *start, int checked[]) {
                 a[start->vertex][currentNode] = 0;
                 printf("a[%d][%d] = %d\n", currentNode, start->vertex, a[currentNode][start->vertex]);
             }
+            else {
+                a[currentNode][index] = 0;
+                a[index][currentNode] = 0;
+                printf("a[%d][%d] = %d\n", currentNode, index, a[currentNode][index]);
+            }
         }
         j++;
-        haveEdgesLeft();
+        //haveEdgesLeft();
         printf("\n");
     } while (j < 6);
 

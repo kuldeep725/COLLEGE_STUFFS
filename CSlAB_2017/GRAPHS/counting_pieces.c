@@ -73,7 +73,7 @@ int deQueue () {
     queue ptr;
     int value;
     //printf("front->data = %d\n", front->data);
-	//checking if the front is null or not
+	//checking if the front is null or not%s
 	if (front == NULL) {
 		//printf("**QUEUE IS EMPTY**\nDEQUEUE OPERATION COULDN'T TAKE PLACE.\n");
 		front = NULL;
@@ -172,16 +172,16 @@ void BFS (int previous[]) {
 		                if (checked[i] != 1) {
 		                    checked[i] = 1;         //marking node as visited
 		                    enQueue(i);
-		                    previous[i] = currentNode;
+		                    previous[i] = currentNode;			//storing previous node into an array
 		                }
 		            }
 
 		        }
 	    	}
     	}
-    	
+
     }
-    
+
 }
 
 //to read the file containing adjacency matrix
@@ -255,12 +255,12 @@ void makeDotFileWithDifferentComponents (int component[32][32], int counter, int
                 				break;
                 		}
                 		break;
-                		
+
                 		}
                 	}
                 }
 
-               
+
                 if (j == n -1 && i == n-1) {
                     fprintf(fpWrite, "\n");
                 }
@@ -305,7 +305,7 @@ int calculateConnectedComponents (){
 		if (checked[i] == 1) continue;
 		k[counter] = 0;
 		counter++;
-		
+
 		// printf("2.counter = %d\n", counter);
 
 		for (j = i+1; j < n; j++) {
@@ -329,25 +329,14 @@ int calculateConnectedComponents (){
 				}
 				checked[i] = 1;
 				checked[j] = 1;
-				
+
 			}
-			
+
 		}
 		// printf("k[%d] = %d\n", counter-1, k[counter-1]);
-		
+
 
 	}
-	/*printf("counter = %d\n", counter);
-	
-	printf("FOR EDUCATIONAL PURPOSE : \n");
-	for (i = 0; i < counter; i++) {
-		for (j = 0; j < k[i]; j++) {
-			printf("component[%d][%d] = %d\n", i, j, component[i][j]);
-			printf("lastArray[%d][%d] = %d\n", i, j, lastArray[i][j]);
-		}
-		printf("\n");
-	}*/
-
 	makeDotFileWithDifferentComponents (component, counter, k, lastArray);
 
 	return counter;
@@ -399,15 +388,16 @@ void makingDotAgain (int previous[]) {
         }
     }
     fprintf(fpWrite, "}");
+	printf("*****DOT FILE CREATED SUCCESSFULLY******\n");
 
 }
 
 int main () {
-	
+
 	int n;
 	char fileName[55];
 	int previous[32];
-	
+
 	printf("ENTER FILE NAME : \n");
     scanf("%s", fileName);					//asking user for input file name
     fpRead = fopen(fileName,"r");
@@ -416,9 +406,9 @@ int main () {
         return 1;							//returning 1 since program didn't work
     }
     readAdjacentMatrix();					//reading adjacent matrix
-    int numberOfComponents = calculateConnectedComponents();
-    printf("numberOfComponents = %d\n", numberOfComponents);
-    BFS (previous);
-    makingDotAgain (previous);
+    int numberOfComponents = calculateConnectedComponents();		//getting number of connected components
+    printf("numberOfComponents = %d\n", numberOfComponents);		//printing number of connected components
+    BFS (previous);							//to print the trace of BFS search
+    makingDotAgain (previous);				//creating dot file
 	return 0;
 }

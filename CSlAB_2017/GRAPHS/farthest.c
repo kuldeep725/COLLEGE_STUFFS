@@ -19,7 +19,6 @@ FILE *fpWrite;
 int a[32][32];
 int n;
 char s1[32];
-int weight[32] = {1};
 
 //defining the queue
 typedef struct queue {
@@ -179,7 +178,7 @@ int minDistance (int root, int dist[], int checkVisited[]) {
 			//printf("minIndex = %d\n", minIndex);
 		}
 		//printf("AFTER if : dist[%d] = %d, min = %d\n",i, dist[i], min);
-		
+
 	}
 	return minIndex;		//returning node nearest to u and unvisited
 
@@ -193,7 +192,7 @@ void printPath (int parent[], int j) {
 	printf("%d ", j);
 	a[parent[j]][j] = RANDOM;		//saving RANDOM for coloredDot file
 	a[j][parent[j]] = RANDOM;		//saving RANDOM for coloredDot file
-	
+
 }
 
 //to print the shortest path
@@ -235,7 +234,7 @@ void findShortestPath (int root, int dest) {
 				/*printf("parent[%d] = %d\n", j, u);
 				printf("dist[%d] = %d\n", j, dist[j]);*/
 
-			} 
+			}
 		}
 		if (u == dest) {
 			printSolution (root, dest, dist, parent);		//printing shortest path between root and destination
@@ -279,8 +278,7 @@ int getShortestDistance (int root, int dest) {
 				dist[j] = dist[u]+a[u][j];		//setting new distance for node j
 				/*printf("parent[%d] = %d\n", j, u);
 				printf("dist[%d] = %d\n", j, dist[j]);*/
-
-			} 
+			}
 		}
 		if (u == dest) {
 			return dist[dest];
@@ -312,7 +310,7 @@ int calculateConnectedComponents (int a[][32]){
 		if (checked[i] == 1) continue;
 		k[counter] = 0;
 		counter++;
-		
+
 		// printf("2.counter = %d\n", counter);
 
 		for (j = i+1; j < n; j++) {
@@ -336,12 +334,12 @@ int calculateConnectedComponents (int a[][32]){
 				}
 				checked[i] = 1;
 				checked[j] = 1;
-				
+
 			}
-			
+
 		}
 		// printf("k[%d] = %d\n", counter-1, k[counter-1]);
-		
+
 
 	}
 
@@ -384,7 +382,7 @@ void makeColoredDotFile () {
                 fprintf(fpWrite, "      ");
                 fprintf(fpWrite, "%d -- %d ", i, j);
                 if (a[i][j] == RANDOM) {
-                	fprintf(fpWrite, "%s ","[color=red]");
+                	fprintf(fpWrite, "%s ","[color=red]");			//MAKING THOSE EDGES COLOR RED WHICH ARE IN THE LONGEST SHORTEST PATH
                 }
                 if (j == n -1 && i == n-1) {
                     fprintf(fpWrite, "\n");
@@ -418,12 +416,12 @@ void calculateShortestDistanceBetweenAllNodes (int b[]) {
 
 	for (i = 0; i < n; i++) {
 		for (j = i+1; j < n; j++) {
-			b[k] = getShortestDistance (i,j);
+			b[k] = getShortestDistance (i,j);					//getting shortest distance between all vertices
 			k++;
 		}
 	}
 
-} 
+}
 
 void showLongestShortestPath (int x, int b[]) {
 
@@ -431,8 +429,8 @@ void showLongestShortestPath (int x, int b[]) {
 	int k = 0;
 	for (i = 0; i < n; i++) {
 		for (j = 0; j < n; j++) {
-			if (getShortestDistance(i,j) == x) {
-				findShortestPath (i,j);
+			if (getShortestDistance(i,j) == x) {			//finding two nodes corresponding to longest shortest distance
+				findShortestPath (i,j);						//printing shortest longest path
 				return;
 			}
 		}
@@ -442,7 +440,7 @@ void showLongestShortestPath (int x, int b[]) {
 
 //MAIN BEGINS HERE
 int main () {
-	
+
 	int a[32][32];
 	int n;
 	char fileName[55];
@@ -458,12 +456,13 @@ int main () {
     readAdjacentMatrix();					//reading adjacent matrix
     int numberOfComponents = calculateConnectedComponents(a);
     printf("numberOfComponents = %d\n", numberOfComponents);
-	if (numberOfComponents == 1) {			//minimum longest shortest path can be found only in connected graph 
+	if (numberOfComponents == 1) {			//minimum longest shortest path can be found only in connected graph
 		calculateShortestDistanceBetweenAllNodes (b);
-		int longestShortestPath = getLongestShortestPath(b);
-		printf("longestShortestPath = %d\n", longestShortestPath); 
-		showLongestShortestPath (longestShortestPath, b);
-		makeColoredDotFile ();
+		int longestShortestPath = getLongestShortestPath(b);		//getting longest shortest path in the graph
+		printf("longestShortestPath = %d\n", longestShortestPath+1);
+		showLongestShortestPath (longestShortestPath, b);			//for showing longest shortest path in the graph with red color
+		makeColoredDotFile ();										//making dot file to show the longest shortest path
+		printf("\n");
 	}
 	return 0;
 }
