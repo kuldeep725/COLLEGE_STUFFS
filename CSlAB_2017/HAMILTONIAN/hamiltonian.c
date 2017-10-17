@@ -16,6 +16,7 @@ int main () {
     scanf("%s", (graph->fileName));         	//asking user for input file name
 
     graph = readAdjacentMatrix(graph);					//reading adjacent matrix
+    findHamiltonianPath (graph);
     return 0;
 
 }
