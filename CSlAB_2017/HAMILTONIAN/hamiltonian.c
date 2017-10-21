@@ -12,11 +12,13 @@ int main () {
 
     GRAPH *graph;
 
-    printf("Enter filename : \n");
-    scanf("%s", (graph->fileName));         	//asking user for input file name
-
+    /*printf("Enter filename : \n");
+    scanf("%s", (graph->fileName));         	//asking user for input file name*/
     graph = readAdjacentMatrix(graph);					//reading adjacent matrix
-    findHamiltonianPath (graph);
+    if (graph == NULL) {
+        return 1;
+    }
+    findHamiltonian (graph);                //to find hamiltonian path
     return 0;
 
 }

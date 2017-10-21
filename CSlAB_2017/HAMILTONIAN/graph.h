@@ -14,3 +14,9 @@ typedef struct HAMILTONIAN {
     struct HAMILTONIAN *next;
     struct HAMILTONIAN *prev;
 } HAMILTONIAN;
+
+int areNodesConnected (GRAPH *, int, int);
+GRAPH * readAdjacentMatrix (GRAPH *);
+void findHamiltonian (GRAPH *);
+int hamCycle (GRAPH *);
+void makeDotFileForHamiltonian (GRAPH *, int[]);
