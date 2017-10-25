@@ -10,7 +10,7 @@
 
 int main () {
 
-    GRAPH *graph;
+    GRAPH *graph = (GRAPH *) malloc(sizeof(GRAPH));
     printf("-------------------HAMILTONIAN CYCLE PROBLEM------------------\n");
     graph = readAdjacentMatrix(graph);					//reading adjacent matrix
     if (graph == NULL) {

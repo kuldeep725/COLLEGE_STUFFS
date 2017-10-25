@@ -37,7 +37,6 @@ int areNodesConnected (GRAPH *graph, int root, int dest) {
 //to read the file containing adjacency matrix
 GRAPH * readAdjacentMatrix (GRAPH *graph) {
 
-    graph = (GRAPH *) malloc(sizeof(GRAPH));
     printf("ENTER THE NAME OF THE FILE : \n");
     char name[32];
     scanf("%s", name);
