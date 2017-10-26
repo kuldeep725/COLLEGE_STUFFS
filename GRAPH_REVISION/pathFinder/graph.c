@@ -1,3 +1,9 @@
+/*
+
+    * Name      : Kuldeep Singh Bhandari
+    * Roll No.  : 111601009
+
+*/
 #include<stdio.h>
 #include<stdlib.h>
 #include<limits.h>
@@ -33,6 +39,60 @@ int BFS (GRAPH *graph, int root, int dest) {
 
 }
 
+//to make dot file from the given adjacency matrix
+void makeDotFile (GRAPH *graph) {
+
+    char one[32];
+    strcpy(one, graph->fileName);
+    char str[32];
+    strcpy(str, one);
+    strcat(str, ".dot");
+    int n = graph->n;
+    FILE *fpWrite = fopen(str, "w");                   //creating/opening a file to write dot form of the adjacency matrix
+    //NOW WE START WRITING DATA IN THE FILE
+
+    fprintf(fpWrite, "graph %s {\n", one);
+
+    int i,j;
+    int check;
+
+    for (i = 0; i < graph->n; i++) {
+
+        check = 0;              //TO CHECK IF INCOMING NODE IS CONNECTED TO ANYONE OR NOT
+        for (j = i; j < graph->n; j++) {
+
+            if (graph->a[i][j] == 1) {
+
+                fprintf(fpWrite, "      ");
+                fprintf(fpWrite, "%d -- %d ", i, j);
+
+                if (j == graph->n -1 && i == graph->n-1) {
+                    fprintf(fpWrite, "\n");
+                }
+                else {
+                    fprintf(fpWrite, ";\n");
+                }
+                check = 1;
+            }
+        }
+
+        if (check == 0) {       //IF NODE IS NOT CONNECTED TO ANYONE
+
+            fprintf(fpWrite, "      ");
+            fprintf(fpWrite, "%d ", i);
+
+            if (i != graph->n -1) {
+                fprintf(fpWrite, ";\n");
+            }
+            else {
+                fprintf(fpWrite, "\n");
+            }
+        }
+    }
+    fprintf(fpWrite, "}");
+    printf("DOT FILE CREATED SUCCESSFULLY...\n");
+
+}
 //to read the file containing adjacency matrix
 GRAPH * readAdjacentMatrix (GRAPH *graph) {
 
@@ -152,7 +212,7 @@ void makeDotFileForHamiltonian (GRAPH *graph, int path[]) {
             if(path[k]==i) break;           
         }
         for (j = i; j < n; j++) {
-            if (graph->a[i][j] == 1) {
+            if (graph->a[i][j] != 0) {
                 fprintf(fpWrite, "      ");
                 fprintf(fpWrite, "%d -- %d ", i, j);
                 if (path[k+1] == j) {
@@ -186,7 +246,7 @@ void makeDotFileForHamiltonian (GRAPH *graph, int path[]) {
         }
     }
     fprintf(fpWrite, "}");
-
+    printf("DOT FILE CREATED SUCCESSFULLY...\n");
 }
 
 /* This function solves the Hamiltonian Cycle problem using Backtracking*/
@@ -217,3 +277,262 @@ void findHamiltonian (GRAPH *graph) {
 
 
 }
+
+void printPath (GRAPH *graph, int parent[], int dest, int *dist) {
+
+    *dist += 1;
+    if (parent[dest] == -1) return;
+    printPath (graph, parent, parent[dest], dist);
+    printf("%d ", dest);
+    graph->a[parent[dest]][dest] = -5;
+    graph->a[dest][parent[dest]] = -5;
+
+}
+
+void printShortestPath (GRAPH *graph, int root, int dest, int parent[], int *dist) {
+
+    // printf("%-9s%-10s%-10s","Vertex", "Distance", "Path");
+    // printf("\n%d -> %d   %-10d%d ", root, dest, , root);
+    printf("PATH (%d -> %d) :  ", root, dest);
+    printf("%d ", root);
+    printPath(graph, parent, dest, dist);
+    printf("\nDistance (%d -> %d) : %d\n", root, dest, *dist);
+
+}
+
+
+void makeDotFileForPathFinder (GRAPH *graph) {
+
+    char one[32];
+    strcpy(one, graph->fileName);
+    char str[32];
+    strcpy(str, one);
+    strcat(str, "pathFinder.dot");
+    int n = graph->n;
+    FILE *fpWrite = fopen(str, "w");                   //creating/opening a file to write dot form of the adjacency matrix
+    //NOW WE START WRITING DATA IN THE FILE
+
+    fprintf(fpWrite, "graph %s {\n", one);
+
+    int i,j;
+    int check;
+
+    for (i = 0; i < graph->n; i++) {
+        check = 0;              //TO CHECK IF INCOMING NODE IS CONNECTED TO ANYONE OR NOT
+        for (j = i; j < graph->n; j++) {
+            if (graph->a[i][j] != 0) {
+                fprintf(fpWrite, "      ");
+                fprintf(fpWrite, "%d -- %d ", i, j);
+                if (graph->a[i][j] == -5) {
+                    fprintf(fpWrite, "%s ","[color=red]");
+                }
+                if (j == graph->n -1 && i == graph->n-1) {
+                    fprintf(fpWrite, "\n");
+                }
+                else {
+                    fprintf(fpWrite, ";\n");
+                }
+                check = 1;
+            }
+        }
+        if (check == 0) {       //IF NODE IS NOT CONNECTED TO ANYONE
+            fprintf(fpWrite, "      ");
+            fprintf(fpWrite, "%d ", i);
+
+            if (i != graph->n -1) {
+                fprintf(fpWrite, ";\n");
+            }
+            else {
+                fprintf(fpWrite, "\n");
+            }
+        }
+    }
+    fprintf(fpWrite, "}");
+    printf("DOT FILE CREATED SUCCESSFULLY...\n");
+}
+
+void findShortestPath (GRAPH *graph, int root, int dest) {
+
+    int visited[32] = {0};
+    int parent[32];
+    int v;
+    int dist = 0;
+
+    Queue *queue = createQueue ();
+    enQueue (queue, root);
+    visited[root] = 1;
+    parent[root] = -1;
+
+    while (!IsQueueEmpty(queue)) {
+
+        int currentNode = deQueue (queue);
+        int flag = 0;
+
+        for (v = 0; v < graph->n; v++) {
+
+            if (!visited[v] && graph->a[currentNode][v] != 0) {
+
+                parent[v] = currentNode;        //currentNode is the parent of vertex v
+                if (v == dest) {
+                    flag = 1;
+                    break;
+                }
+                enQueue (queue, v);
+                visited[v] = 1;
+
+            }
+        }
+        if (flag) break;
+
+    }
+    printShortestPath (graph, root, dest, parent, &dist);
+    makeDotFileForPathFinder (graph);
+
+}
+
+void makeDotFileForShortRed (GRAPH *graph) {
+
+    char one[32];
+    strcpy(one, graph->fileName);
+    char str[32];
+    strcpy(str, one);
+    strcat(str, "try.dot");
+    int n = graph->n;
+    FILE *fpWrite = fopen(str, "w");                   //creating/opening a file to write dot form of the adjacency matrix
+    //NOW WE START WRITING DATA IN THE FILE
+
+    fprintf(fpWrite, "graph %s {\n", one);
+
+    int i,j;
+    int check;
+
+    for (i = 0; i < graph->n; i++) {
+        check = 0;              //TO CHECK IF INCOMING NODE IS CONNECTED TO ANYONE OR NOT
+        for (j = i; j < graph->n; j++) {
+            if (graph->a[i][j] != 0) {
+                fprintf(fpWrite, "      ");
+                fprintf(fpWrite, "%d -- %d ", i, j);
+                if (graph->a[i][j] == -5 || graph->a[j][i] == -5) {
+                    fprintf(fpWrite, "%s ","[style=dotted, color=red]");
+                }
+                else if (graph->a[i][j] == 1 || graph->a[j][i] == 1) {
+                    fprintf(fpWrite, "%s ","[color=red]");
+                }
+                else if (graph->a[i][j] == 2 || graph->a[j][i] == 2) {
+                    fprintf(fpWrite, "%s ","[color=blue]");
+                }
+                else if (graph->a[i][j] == 3 || graph->a[j][i] == 3) {
+                    fprintf(fpWrite, "%s ","[color=green]");
+                }
+                if (j == graph->n -1 && i == graph->n-1) {
+                    fprintf(fpWrite, "\n");
+                }
+                else {
+                    fprintf(fpWrite, ";\n");
+                }
+                check = 1;
+            }
+        }
+        if (check == 0) {       //IF NODE IS NOT CONNECTED TO ANYONE
+            fprintf(fpWrite, "      ");
+            fprintf(fpWrite, "%d ", i);
+
+            if (i != graph->n -1) {
+                fprintf(fpWrite, ";\n");
+            }
+            else {
+                fprintf(fpWrite, "\n");
+            }
+        }
+    }
+    fprintf(fpWrite, "}");
+    printf("DOT FILE CREATED SUCCESSFULLY...\n");
+
+ }
+
+int countRedEdges (GRAPH *graph, int currentNode, int parent[]) {
+
+    if (parent[currentNode] == -1) return 0;
+
+    int count = countRedEdges (graph, parent[currentNode], parent);
+
+    if (graph->a[parent[currentNode]][currentNode] == 1) count++;
+    return count;
+
+}
+
+void findShortestPathWithRed (GRAPH *graph, int root, int dest) {
+
+    int visited[32] = {0};
+    int parent[32];
+    int v;
+    int dist = 0;
+    int level[32];
+    int red[32];
+    int pre_dest = -5;              //node just before destination node
+    int minDistance = 0;
+    int noOfRed = 0;
+
+    Queue *queue = createQueue ();
+    enQueue (queue, root);
+    visited[root] = 1;
+    parent[root] = -1;
+    level[root] = 0;
+
+    while (!IsQueueEmpty(queue)) {
+
+        int currentNode = deQueue (queue);
+        //printf("\ncurrentNode = %d\n", currentNode);
+        if (currentNode == dest) break;
+        
+
+        for (v = 0; v < graph->n; v++) {
+
+            if (!visited[v] && graph->a[currentNode][v] != 0) {
+
+                if (v != dest) {
+                    parent[v] = currentNode;        //currentNode is the parent of vertex v
+                }
+                
+                if (v == dest) {
+                    
+                    //printf("currentNode for dest : %d\n", currentNode);
+                    //printf("minDistance = %d\n", level[currentNode] + 1);
+                    minDistance = level[currentNode];
+                    if (pre_dest == -5) {
+                        //printf("pre_dest previously = -5\n");
+                        pre_dest = currentNode;
+                        //printf("pre_dest = %d\n", pre_dest);
+                        noOfRed = countRedEdges (graph, currentNode,parent);
+                        //printf("noOfRed = %d\n", noOfRed);
+                        parent[v] = currentNode;        //currentNode is the parent of vertex v
+                        if (graph->a[currentNode][v] == 1) noOfRed++;
+                        //printf("FINAL noOfRed = %d\n", noOfRed);
+                    }
+                    else if (noOfRed == countRedEdges (graph, currentNode, parent)) {
+                        if (graph->a[currentNode][v] == 1) {
+                            pre_dest = currentNode;
+                            parent[v] = currentNode;        //currentNode is the parent of vertex v
+                            noOfRed++;
+                            // printf("pre_dest = %d\n", pre_dest);
+                            // printf("FINAL noOfRed = %d\n", noOfRed);
+                        }
+                    }
+                    continue;
+                    
+                }
+                enQueue (queue, v);
+                level[v] = level[currentNode] + 1;
+                visited[v] = 1;
+
+            }
+        }
+        
+    }
+    printf("noOfRed = %d\n", noOfRed);
+    printf("minDistance = %d\n", minDistance);
+    printShortestPath (graph, root, dest, parent, &dist);
+    makeDotFileForShortRed (graph);
+
+}
+ 

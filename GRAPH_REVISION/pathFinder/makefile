@@ -7,7 +7,7 @@ path_finder.o : path_finder.c graph.h queue.h
 queue.o : queue.c queue.h
 	gcc -c queue.c -g
 
-graph.o : graph.c queue.h graph.h
+graph.o : graph.h  queue.h graph.c
 	gcc -c graph.c -g
 
 clean:
