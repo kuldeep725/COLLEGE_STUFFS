@@ -889,6 +889,69 @@ void findEulerianCircuit (GRAPH *graph, int starting_node, int a_d[][32],int deg
 
     p = head;
     Node *p_d;
+    int currentNode;
+    //int parent[32];
+    
+   /* do {
+
+        if (degree[p->data] != 0) {
+
+            //printf("%d ", p->data);
+            //currentNode = p->data;
+            enQueue (queue, p->data);
+            //parent[p->data] = -1;
+
+            while (!IsQueueEmpty (queue)) {
+
+                currentNode = deQueue (queue);
+                printf("%d ", currentNode);
+
+                for (v = 0; v < graph->n; v++) {
+
+                    if (a_d[currentNode][v] == 0 && graph->a[currentNode][v] != 0) {
+
+                        //parent[v] = currentNode;
+                        a_d[currentNode][v] = 1;
+                        a_d[v][currentNode] = 1;
+
+                        // currentNode = v;
+                        //printf("v = %d ", v);
+                        
+                        degree[currentNode]--;
+                        degree[v]--;
+
+                        if (degree[v] > 1)  {
+
+                            //printf("enQueuing %d\n", v);
+                            enQueue (queue, v);
+                            continue;
+                        
+                        }
+                        break;
+                        if (v == graph->n - 1 && graph->a[p->data][v] == 0) {
+                            v = 0;
+                        }
+
+                    }
+            }
+
+            }
+            
+            a_d[currentNode][p->data] = 1;
+            a_d[p->data][currentNode] = 1;
+        }
+        
+        printf("%d ", p->data);
+
+        p = p->next;
+
+    } while (p != head);*/
+
+    /*for (v = 0; v < count_path; v++) {
+
+        printf("%d ", path[v]);
+
+    }*/
     
     do {
 
@@ -925,12 +988,6 @@ void findEulerianCircuit (GRAPH *graph, int starting_node, int a_d[][32],int deg
 
     } while (p != head);
 
-    /*for (v = 0; v < count_path; v++) {
-
-        printf("%d ", path[v]);
-
-    }*/
-    
     printf("\n");
     makeDotFileForEulerian (graph, a_d);
 
