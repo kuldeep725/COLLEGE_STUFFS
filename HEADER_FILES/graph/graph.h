@@ -20,12 +20,12 @@ typedef struct GRAPH {
 
 } GRAPH;
 
-//basic functions in graph 
+//(1) basic functions in graph 
 int BFS (GRAPH *graph, int, int);
 GRAPH * readAdjacentMatrix (GRAPH *);
 void makeDotFile (GRAPH *);
 
-//hamiltonian program functions declare here
+//(2)hamiltonian program functions declare here
 void findHamiltonian (GRAPH *);
 int hamCycle (GRAPH *);
 void makeDotFileForHamiltonian (GRAPH *, int[]);
@@ -33,25 +33,30 @@ int hamCycleUtil (GRAPH *, int[], int);
 int isSafe (int , GRAPH *, int [], int);
 void printSolution (GRAPH *, int[]);
 
-//pathfinder program functions declare here
+//(3)pathfinder program functions declare here
 void makeDotFileForPathFinder (GRAPH *);
 void printPath (GRAPH *, int[], int, int *);
 void printShortestPath (GRAPH *, int, int, int[], int *);
 int findShortestPath (GRAPH *, int, int);
 
-//shortRed program functions declare here
+//(4)shortRed program functions declare here
 void makeDotFileForShortRed (GRAPH  *);
 int countRedEdges (GRAPH *, int, int[]);
 void findShortestPathWithRed (GRAPH *, int, int);
 
-//counting_pieces program functions declare here
+//(5)counting_pieces program functions declare here
 int calculateNumberOfConnectedComponents (GRAPH *);
 int haveVerticesLeft (GRAPH *, int []);
 
-//diameter program functions declare here
+//(6)diameter program functions declare here
 void findDiameter (GRAPH *);
 
-//eulerian program functions declare here
+//(7)eulerian program functions declare here
 int IsDegreeEven (GRAPH *, int []);
 void findEulerianCircuit (GRAPH *, int, int[][32], int[]);
 void makeDotFileForEulerian (GRAPH *, int [][32]);
+
+//(8)color_6 program functions declare here
+void coloringWithSixColors (GRAPH *graph);
+int isColorSame (GRAPH *, int [], int );
+void makeDotFileForSixColoring (GRAPH *, int []);
