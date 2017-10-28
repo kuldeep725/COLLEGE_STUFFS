@@ -28,7 +28,8 @@ int BFS (GRAPH *graph, int root, int dest) {
         int currentNode = deQueue (queue);          //finding current node
         if (currentNode == dest) {
             //printf("dist = %d\n", level[dest]);
-            return level[dest];                  //return level of the destination node if the dest is found to be connected to root 
+            return level[dest];                 //return level of the destination node
+                                                //if the dest is found to be connected to root 
         }
 
         for (v = 0; v < graph->n; v++) {
@@ -53,7 +54,8 @@ void makeDotFile (GRAPH *graph) {
     char str[32];
 
     int n = graph->n;
-    FILE *fpWrite = fopen(str, "w");                   //creating/opening a file to write dot form of the adjacency matrix
+    FILE *fpWrite = fopen(str, "w");                   //creating/opening a file to write dot form 
+                                                       //of the adjacency matrix 
     
     strcpy(one, graph->fileName);
     strcpy(str, one);
@@ -395,9 +397,10 @@ int findShortestPath (GRAPH *graph, int root, int dest) {
                 if (v == dest) {
                     flag = 1;
                     break;
-                }
+                } //if destination vertex is found
+
                 enQueue (queue, v);
-                visited[v] = 1;
+                visited[v] = 1;                 //marking vertex v to be visited
                 level[v] = level[currentNode] + 1;
 
             }
@@ -722,6 +725,271 @@ void findDiameter (GRAPH *graph) {
     printf("maxDistance (%d, %d) = %d\n", index_i, index_j, maxDistance); 
     findShortestPath (graph, index_i, index_j);
     //makeDotFileForDiameter (graph);
+
+}
+
+//eulerian program functions starts here
+
+int IsDegreeEven (GRAPH *graph, int degree[]) {
+
+    int i, j;   
+
+    for (i = 0; i < graph->n; i++) {
+
+        for (j = 0; j < graph->n; j++) {
+
+            degree[i] += graph->a[i][j];
+
+        }
+        if (degree[i] % 2 != 0) return 0;             //a vertex has an odd degree
+
+    }
+    return 1;                   //all vertices have degree even, returning 1
+
+}
+void makeDotFileForEulerian (GRAPH *graph, int a_d[][32]) {
+
+    int i,j;
+    int check;
+    char one[32];
+    char str[32];
+
+    strcpy(one, graph->fileName);
+    strcpy(str, one);
+    strcat(str, "Eulerian.dot");
+
+    int n = graph->n;
+    FILE *fpWrite = fopen(str, "w");                   //creating/opening a file to write dot form 
+                                                       //of the adjacency matrix 
+    
+    //NOW WE START WRITING DATA IN THE FILE
+
+    fprintf(fpWrite, "graph %s {\n", one);
+
+    for (i = 0; i < graph->n; i++) {
+
+        check = 0;              //TO CHECK IF INCOMING NODE IS CONNECTED TO ANYONE OR NOT
+
+        for (j = i; j < graph->n; j++) {
+
+            if (graph->a[i][j] == 1) {
+
+                fprintf(fpWrite, "      ");
+                fprintf(fpWrite, "%d -- %d ", i, j);
+
+                if (a_d[i][j] == 1 || a_d[j][i] == 1) {
+                    fprintf(fpWrite, "[color = %s] ", "red");
+                }
+
+                if (j == graph->n -1 && i == graph->n-1) {
+                    fprintf(fpWrite, "\n");
+                }
+                else {
+                    fprintf(fpWrite, ";\n");
+                }
+                check = 1;
+            }
+        }
+
+        if (check == 0) {       //IF NODE IS NOT CONNECTED TO ANYONE
+
+            fprintf(fpWrite, "      ");
+            fprintf(fpWrite, "%d ", i);
+
+            if (i != graph->n -1) {
+                fprintf(fpWrite, ";\n");
+            }
+            else {
+                fprintf(fpWrite, "\n");
+            }
+
+        }
+    }
+
+    fprintf(fpWrite, "}");
+    printf("DOT FILE CREATED SUCCESSFULLY...\n");
+
+}
+
+void findEulerianCircuit (GRAPH *graph, int starting_node, int a_d[][32],int degree[]) {
+
+    int v;
+    //int path[132];                      //to store vertices in order of their eulerian circuit
+    int count_path = 0;                 //to count the vertices entry in the array 'path'
+    int pre_starting_node = -1;         //to store the vertex adjacent to starting node when 
+                                        //starting node has degree left to be 1 
+    Node *head = (Node *) malloc(sizeof(Node));
+    Node *head_d = head;
+    Node *p;
+
+    Queue *queue = createQueue ();      //creating queue
+
+    enQueue (queue, starting_node);
+    head->data = starting_node;
+    head->next = NULL;
+    //path[count_path++] = starting_node;   //first element of the path array is the 
+                                        //starting index
+
+    printf("EULERIAN CIRCUIT goes as follows : \n");
+
+    while (!IsQueueEmpty(queue)) {
+
+        int currentNode = deQueue (queue);          //finding current node
+
+        for (v = 0; v < graph->n; v++) {
+            // printf("a[%d][%d] = %d ", currentNode, v, graph->a[currentNode][v]);
+            // printf("a_d[%d][%d] = %d\n", currentNode, v, a_d[currentNode][v]);
+            if (graph->a[currentNode][v] != 0) {
+
+                if (a_d[currentNode][v] == 0) {
+
+                    if (v == starting_node && degree[currentNode] != 1) continue;
+
+                    /*if (currentNode != starting_node && degree[v] == 2 
+                         && a_d[starting_node][v] == 0 && graph->a[starting_node][v] != 0 
+                        && degree[currentNode]>1 && degree[starting_node] == 1) 
+                        {
+                            printf("(%d, %d)\n", currentNode, v);
+                            continue;
+                        }*/
+                    /*if (degree[starting_node] == 1) {
+
+                        if (pre_starting_node == -1) {
+                            pre_starting_node = findPreStartingNode (graph, starting_node, a_d);
+                            printf("pre_starting_node = %d\n", pre_starting_node);
+                        }
+
+                        if (pre_starting_node == v && degree[currentNode] > 1) continue;
+
+                    }
+*/
+                    enQueue (queue, v);
+                    //path[count_path++] = v;         //storing vertex 'v' in the array 'path'
+                    p = (Node *) malloc(sizeof(Node));
+                    p->data = v;
+                    p->next = NULL;
+                    head_d->next = p;
+                    head_d = p;
+
+                    a_d[currentNode][v] = 1;
+                    a_d[v][currentNode] = 1;
+                    degree[v]--;
+                    degree[currentNode]--;
+                    break;
+
+                }
+                
+            }
+        }
+        
+
+    }
+
+    head_d->next = head;
+
+    p = head;
+    Node *p_d;
+    int currentNode;
+    //int parent[32];
+    
+   /* do {
+
+        if (degree[p->data] != 0) {
+
+            //printf("%d ", p->data);
+            //currentNode = p->data;
+            enQueue (queue, p->data);
+            //parent[p->data] = -1;
+
+            while (!IsQueueEmpty (queue)) {
+
+                currentNode = deQueue (queue);
+                printf("%d ", currentNode);
+
+                for (v = 0; v < graph->n; v++) {
+
+                    if (a_d[currentNode][v] == 0 && graph->a[currentNode][v] != 0) {
+
+                        //parent[v] = currentNode;
+                        a_d[currentNode][v] = 1;
+                        a_d[v][currentNode] = 1;
+
+                        // currentNode = v;
+                        //printf("v = %d ", v);
+                        
+                        degree[currentNode]--;
+                        degree[v]--;
+
+                        if (degree[v] > 1)  {
+
+                            //printf("enQueuing %d\n", v);
+                            enQueue (queue, v);
+                            continue;
+                        
+                        }
+                        break;
+                        if (v == graph->n - 1 && graph->a[p->data][v] == 0) {
+                            v = 0;
+                        }
+
+                    }
+            }
+
+            }
+            
+            a_d[currentNode][p->data] = 1;
+            a_d[p->data][currentNode] = 1;
+        }
+        
+        printf("%d ", p->data);
+
+        p = p->next;
+
+    } while (p != head);*/
+
+    /*for (v = 0; v < count_path; v++) {
+
+        printf("%d ", path[v]);
+
+    }*/
+    
+    do {
+
+        if (degree[p->data] != 0) {
+
+            printf("%d ", p->data);
+            int currentNode = p->data;
+
+            for (v = 0; v < graph->n; v++) {
+
+                if (a_d[currentNode][v] == 0 && graph->a[currentNode][v] != 0) {
+
+                    a_d[currentNode][v] = 1;
+                    a_d[v][currentNode] = 1;
+
+                    currentNode = v;
+                    printf("%d ", v);
+                    
+                    degree[currentNode]--;
+                    degree[v]--;
+                    if (v == graph->n - 1 && graph->a[p->data][v] == 0) {
+                        v = 0;
+                    }
+
+                }
+            }
+            a_d[currentNode][p->data] = 1;
+            a_d[p->data][currentNode] = 1;
+        }
+        
+        printf("%d ", p->data);
+
+        p = p->next;
+
+    } while (p != head);
+
+    printf("\n");
+    makeDotFileForEulerian (graph, a_d);
 
 }
 
