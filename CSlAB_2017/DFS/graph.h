@@ -20,7 +20,7 @@ typedef struct GRAPH {
 
 } GRAPH;
 
-//(1) basic functions in graph 
+//(1) basic functions in graph
 int BFS (GRAPH *graph, int, int);
 GRAPH * readAdjacentMatrix (GRAPH *);
 void makeDotFile (GRAPH *);
@@ -68,3 +68,6 @@ void printPathForDijkstra (GRAPH *, int [], int , int [][32]);
 void printShortestPathForDijkstra (GRAPH *, int , int , int [], int , int [][32]);
 void makeDotFileForDijkstra (GRAPH *, int , int , int [], int [][32]);
 int dijkstra (GRAPH *, int, int);
+
+void dfsUsingStack (GRAPH *, int);
+void dfsUsingRecursion (GRAPH *, int);

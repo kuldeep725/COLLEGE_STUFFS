@@ -1,6 +1,6 @@
 graph weighted1 {
-      8  [color = green, style = filled];
-      3  [color = blue, style = filled];
+      3  [color = green, style = filled];
+      8  [color = blue, style = filled];
       0 -- 3 [color=red,style = bold] [label = 3, fontcolor = navyblue,fontsize = 24] ;
       0 -- 4 [label = 2] ;
       0 -- 7 [label = 7] ;

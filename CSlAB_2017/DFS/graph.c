@@ -10,6 +10,7 @@
 #include<string.h>
 #include "queue.h"
 #include "graph.h"
+#include "stack.h"
 
 int BFS (GRAPH *graph, int root, int dest) {
 
@@ -30,7 +31,7 @@ int BFS (GRAPH *graph, int root, int dest) {
         if (currentNode == dest) {
             //printf("dist = %d\n", level[dest]);
             return level[dest];                 //return level of the destination node
-                                                //if the dest is found to be connected to root 
+                                                //if the dest is found to be connected to root
         }
 
         for (i = 0; i < graph->n; i++) {
@@ -60,13 +61,13 @@ void makeDotFile (GRAPH *graph) {
     char str[32];
 
     int n = graph->n;
-    FILE *fpWrite = fopen(str, "w");                   //creating/opening a file to write dot form 
-                                                       //of the adjacency matrix 
-    
+    FILE *fpWrite = fopen(str, "w");                   //creating/opening a file to write dot form
+                                                       //of the adjacency matrix
+
     strcpy(one, graph->fileName);
     strcpy(str, one);
     strcat(str, ".dot");
-    
+
     //NOW WE START WRITING DATA IN THE FILE
 
     fprintf(fpWrite, "graph %s {\n", one);
@@ -126,7 +127,7 @@ GRAPH * readAdjacentMatrix (GRAPH *graph) {
     scanf("%s", name);
 
     FILE *fpRead = fopen(name,"r");
-    
+
     if (fpRead == 0) {
 
         printf("ERROR IN FILE OPENING.\n");			//error in file opening
@@ -143,11 +144,11 @@ GRAPH * readAdjacentMatrix (GRAPH *graph) {
 
     int i, j;               //loop variables
 
-    for (i = 0; i < graph->n; i++) 
-        for (j = 0; j < graph->n; j++) 
+    for (i = 0; i < graph->n; i++)
+        for (j = 0; j < graph->n; j++)
             fscanf(fpRead, "%1d", &(graph->a[i][j]));        //taking input as n*n adjacency matrix from the input file
-        
-    
+
+
     fclose(fpRead);
     return graph;
 
@@ -162,7 +163,7 @@ void printSolution(GRAPH *graph, int path[])
             " Following is one Hamiltonian Cycle \n");
     for (int i = 0; i < graph->n; i++)
         printf(" %d ", path[i]);
- 
+
     // Print the first vertex again to show the complete cycle
     printf(" %d ", path[0]);
     printf("\n");
@@ -182,7 +183,7 @@ int isSafe (int v, GRAPH *graph, int path[], int pos) {
     for (i = 0; i < pos; i++)
         if (path[i] == v)
             return 0;
- 
+
     return 1;
 }
 /* A recursive utility function to solve hamiltonian cycle problem */
@@ -219,7 +220,7 @@ int hamCycleUtil (GRAPH *graph, int path[], int pos) {
     return 0;
 }
 
-//to create dot file to show hamiltonian path in red color 
+//to create dot file to show hamiltonian path in red color
 void makeDotFileForHamiltonian (GRAPH *graph, int path[]) {
 
     char one[32];
@@ -242,7 +243,7 @@ void makeDotFileForHamiltonian (GRAPH *graph, int path[]) {
         k = 0;
         //finding location of vertex i in the array path[]
         for (; k < n; k++) {
-            if(path[k]==i) break;           
+            if(path[k]==i) break;
         }
         for (j = i; j < n; j++) {
             if (graph->a[i][j] != 0) {
@@ -288,7 +289,7 @@ int hamCycle(GRAPH *graph)
     int path[graph->n];
     for (int i = 0; i < graph->n; i++)
         path[i] = -1;
-    
+
     /* Let us put vertex 0 as the first vertex in the path. If there is
        a Hamiltonian Cycle, then the path can be started from any point
        of the cycle as the graph is undirected */
@@ -315,7 +316,7 @@ void findHamiltonian (GRAPH *graph) {
 
 void printPath (GRAPH *graph, int parent[], int dest) {
 
-    
+
     if (parent[dest] == -1) return;
 
     printPath (graph, parent, parent[dest]);
@@ -400,7 +401,7 @@ void makeDotFileForPathFinder (GRAPH *graph) {
         }
 
     }
-    
+
     fprintf(fpWrite, "}");
     fclose (fpWrite);
     printf("DOT FILE CREATED SUCCESSFULLY...\n");
@@ -451,7 +452,7 @@ int findShortestPath (GRAPH *graph, int root, int dest) {
     printShortestPath (graph, root, dest, parent, level[dest]);            //to print the shortest path
     makeDotFileForPathFinder (graph);
     return level[dest];
-    
+
 }
 
 // shortRed program functions here
@@ -551,7 +552,7 @@ void findShortestPathWithRed (GRAPH *graph, int root, int dest) {
         int currentNode = deQueue (queue);
         //printf("\ncurrentNode = %d\n", currentNode);
         if (currentNode == dest) break;
-        
+
 
         for (v = 0; v < graph->n; v++) {
 
@@ -560,9 +561,9 @@ void findShortestPathWithRed (GRAPH *graph, int root, int dest) {
                 if (v != dest) {
                     parent[v] = currentNode;        //currentNode is the parent of vertex v
                 }
-                
+
                 if (v == dest) {
-                    
+
                     //printf("currentNode for dest : %d\n", currentNode);
                     //printf("minDistance = %d\n", level[currentNode] + 1);
                     minDistance = level[currentNode];
@@ -586,7 +587,7 @@ void findShortestPathWithRed (GRAPH *graph, int root, int dest) {
                         }
                     }
                     continue;
-                    
+
                 }
                 enQueue (queue, v);
                 level[v] = level[currentNode] + 1;
@@ -594,7 +595,7 @@ void findShortestPathWithRed (GRAPH *graph, int root, int dest) {
 
             }
         }
-        
+
     }
     printf("noOfRed = %d\n", noOfRed);
     printf("minDistance = %d\n", minDistance);
@@ -636,7 +637,7 @@ void makeDotFileForCountingPieces (GRAPH *graph, int edgeColor[]) {
     strcat(str, "counting_pieces.dot");
 
     FILE *fpWrite = fopen(str, "w");                   //creating/opening a file to write dot form of the adjacency matrix
-    
+
     //NOW WE START WRITING DATA IN THE FILE
 
     fprintf(fpWrite, "graph %s {\n", one);
@@ -681,7 +682,7 @@ void makeDotFileForCountingPieces (GRAPH *graph, int edgeColor[]) {
 
 }
 
-//to calculate Number of Connected Components 
+//to calculate Number of Connected Components
 int calculateNumberOfConnectedComponents (GRAPH *graph) {
 
     int visited[32] = {0};          //making all to be unchecked (0)
@@ -691,7 +692,7 @@ int calculateNumberOfConnectedComponents (GRAPH *graph) {
     enQueue (queue, 0);
     int v;
     int noOfConnectedComponents = 1;
-    
+
     int edgeColor[32];
 
 
@@ -758,12 +759,12 @@ void findDiameter (GRAPH *graph) {
                 index_i = i;
                 index_j = j;
 
-            } 
+            }
 
         }
 
     }
-    printf("maxDistance (%d, %d) = %d\n", index_i, index_j, maxDistance); 
+    printf("maxDistance (%d, %d) = %d\n", index_i, index_j, maxDistance);
     findShortestPath (graph, index_i, index_j);
     //makeDotFileForDiameter (graph);
 
@@ -773,7 +774,7 @@ void findDiameter (GRAPH *graph) {
 
 int isDegreeEven (GRAPH *graph, int degree[]) {
 
-    int i, j;   
+    int i, j;
 
     for (i = 0; i < graph->n; i++) {
 
@@ -800,9 +801,9 @@ void makeDotFileForEulerian (GRAPH *graph, int a_d[][32]) {
     strcat(str, "Eulerian.dot");
 
     int n = graph->n;
-    FILE *fpWrite = fopen(str, "w");                   //creating/opening a file to write dot form 
-                                                       //of the adjacency matrix 
-    
+    FILE *fpWrite = fopen(str, "w");                   //creating/opening a file to write dot form
+                                                       //of the adjacency matrix
+
     //NOW WE START WRITING DATA IN THE FILE
 
     fprintf(fpWrite, "graph %s {\n", one);
@@ -858,8 +859,8 @@ void findEulerianCircuit (GRAPH *graph, int starting_node, int a_d[][32],int deg
     int v;
     //int path[132];                      //to store vertices in order of their eulerian circuit
     int count_path = 0;                 //to count the vertices entry in the array 'path'
-    int pre_starting_node = -1;         //to store the vertex adjacent to starting node when 
-                                        //starting node has degree left to be 1 
+    int pre_starting_node = -1;         //to store the vertex adjacent to starting node when
+                                        //starting node has degree left to be 1
     Node *head = (Node *) malloc(sizeof(Node));
     Node *head_d = head;
     Node *p;
@@ -869,7 +870,7 @@ void findEulerianCircuit (GRAPH *graph, int starting_node, int a_d[][32],int deg
     enQueue (queue, starting_node);
     head->data = starting_node;
     head->next = NULL;
-    //path[count_path++] = starting_node;   //first element of the path array is the 
+    //path[count_path++] = starting_node;   //first element of the path array is the
                                         //starting index
 
     printf("EULERIAN CIRCUIT goes as follows : \n");
@@ -887,9 +888,9 @@ void findEulerianCircuit (GRAPH *graph, int starting_node, int a_d[][32],int deg
 
                     if (v == starting_node && degree[currentNode] != 1) continue;
 
-                    /*if (currentNode != starting_node && degree[v] == 2 
-                         && a_d[starting_node][v] == 0 && graph->a[starting_node][v] != 0 
-                        && degree[currentNode]>1 && degree[starting_node] == 1) 
+                    /*if (currentNode != starting_node && degree[v] == 2
+                         && a_d[starting_node][v] == 0 && graph->a[starting_node][v] != 0
+                        && degree[currentNode]>1 && degree[starting_node] == 1)
                         {
                             printf("(%d, %d)\n", currentNode, v);
                             continue;
@@ -920,10 +921,10 @@ void findEulerianCircuit (GRAPH *graph, int starting_node, int a_d[][32],int deg
                     break;
 
                 }
-                
+
             }
         }
-        
+
 
     }
 
@@ -933,7 +934,7 @@ void findEulerianCircuit (GRAPH *graph, int starting_node, int a_d[][32],int deg
     Node *p_d;
     int currentNode;
     //int parent[32];
-    
+
    /* do {
 
         if (degree[p->data] != 0) {
@@ -958,7 +959,7 @@ void findEulerianCircuit (GRAPH *graph, int starting_node, int a_d[][32],int deg
 
                         // currentNode = v;
                         //printf("v = %d ", v);
-                        
+
                         degree[currentNode]--;
                         degree[v]--;
 
@@ -967,7 +968,7 @@ void findEulerianCircuit (GRAPH *graph, int starting_node, int a_d[][32],int deg
                             //printf("enQueuing %d\n", v);
                             enQueue (queue, v);
                             continue;
-                        
+
                         }
                         break;
                         if (v == graph->n - 1 && graph->a[p->data][v] == 0) {
@@ -978,11 +979,11 @@ void findEulerianCircuit (GRAPH *graph, int starting_node, int a_d[][32],int deg
             }
 
             }
-            
+
             a_d[currentNode][p->data] = 1;
             a_d[p->data][currentNode] = 1;
         }
-        
+
         printf("%d ", p->data);
 
         p = p->next;
@@ -994,7 +995,7 @@ void findEulerianCircuit (GRAPH *graph, int starting_node, int a_d[][32],int deg
         printf("%d ", path[v]);
 
     }*/
-    
+
     do {
 
         if (degree[p->data] != 0) {
@@ -1011,7 +1012,7 @@ void findEulerianCircuit (GRAPH *graph, int starting_node, int a_d[][32],int deg
 
                     currentNode = v;
                     printf("%d ", v);
-                    
+
                     degree[currentNode]--;
                     degree[v]--;
                     if (v == graph->n - 1 && graph->a[p->data][v] == 0) {
@@ -1023,7 +1024,7 @@ void findEulerianCircuit (GRAPH *graph, int starting_node, int a_d[][32],int deg
             a_d[currentNode][p->data] = 1;
             a_d[p->data][currentNode] = 1;
         }
-        
+
         printf("%d ", p->data);
 
         p = p->next;
@@ -1101,9 +1102,9 @@ void makeDotFileForSixColoring (GRAPH *graph, int vertexColor[]) {
         fprintf(fpWrite, "%d  ", i);
         fprintf(fpWrite, "[color = %s, style = filled] ", color[vertexColor[i]]);
 
-        if (i == graph->n - 1) 
+        if (i == graph->n - 1)
             fprintf(fpWrite, "\n");
-        else 
+        else
             fprintf(fpWrite, ";\n");
 
 
@@ -1120,7 +1121,7 @@ int isColorSame (GRAPH *graph, int vertexColor[], int v) {
     int i;
 
     for (i = 0; i < graph->n; ++i)
-        if ((graph->a[v][i] == 1 || graph->a[i][v] == 1) && vertexColor[v] == vertexColor[i]) return i;             //color of vertex adjacent 
+        if ((graph->a[v][i] == 1 || graph->a[i][v] == 1) && vertexColor[v] == vertexColor[i]) return i;             //color of vertex adjacent
                                                                     //to v has same color
     return -1;               //no adjacent vertex of v has the same color as v
 
@@ -1128,7 +1129,7 @@ int isColorSame (GRAPH *graph, int vertexColor[], int v) {
 
 void coloringWithSixColors (GRAPH *graph) {
 
-    int color_index = 0;                //to store 
+    int color_index = 0;                //to store
     int vertexColor [32];
     int i;
 
@@ -1177,7 +1178,7 @@ void coloringWithSixColors (GRAPH *graph) {
 
 //dijkstra program functions begin here
 
-//function to find if any vertex is unvisited 
+//function to find if any vertex is unvisited
 int hasAnyVertexUnvisited (GRAPH *graph, int visited[]) {
 
     int i = -1;
@@ -1193,7 +1194,7 @@ int hasAnyVertexUnvisited (GRAPH *graph, int visited[]) {
 int getMinimumDistanceVertex (GRAPH *graph, int dist[], int visited[]) {
 
     int min =  INT_MAX;         //initializing min to be INT_MAX
-    int min_index = 0;     
+    int min_index = 0;
     int i;
 
     for (i = 0; i < graph->n; i++) {
@@ -1209,12 +1210,12 @@ int getMinimumDistanceVertex (GRAPH *graph, int dist[], int visited[]) {
 
     return min_index;               //returning vertex which has least distance and unvisited
 
-} 
+}
 
 //to print path for shortest path using recursion
 void printPathForDijkstra (GRAPH *graph, int parent[], int dest, int a_d[][32]) {
 
-    
+
     if (parent[dest] == -1) return;
 
     printPathForDijkstra (graph, parent, parent[dest], a_d);
@@ -1229,7 +1230,7 @@ void printPathForDijkstra (GRAPH *graph, int parent[], int dest, int a_d[][32]) 
 void printShortestPathForDijkstra (GRAPH *graph, int root, int dest, int parent[], int dist, int a_d[][32]) {
 
     printf("%-9s%-10s%-10s","Vertex", "Distance", "Path");
-    printf("\n%d -> %d   %-10d%d ", root, dest, dist, root); 
+    printf("\n%d -> %d   %-10d%d ", root, dest, dist, root);
 
     // printf("PATH (%d -> %d) :  ", root, dest);
     // printf("%d ", root);
@@ -1261,7 +1262,7 @@ void makeDotFileForDijkstra (GRAPH *graph, int root, int dest, int dist[], int a
     //coloring root vertex in green color
     fprintf(fpWrite, "      ");
     fprintf(fpWrite, "%d  ", root);
-    fprintf(fpWrite, "[color = %s, style = filled];\n", "green");       
+    fprintf(fpWrite, "[color = %s, style = filled];\n", "green");
 
     //coloring destination vertex in blue color
     fprintf(fpWrite, "      ");
@@ -1280,11 +1281,11 @@ void makeDotFileForDijkstra (GRAPH *graph, int root, int dest, int dist[], int a
                 fprintf(fpWrite, "%d -- %d ", i, j);
 
                 //checking if the given pair of vertices (i, j) comes in the path together or not
-                if (a_d[i][j] == -5 || a_d[j][i] == -5)                     
+                if (a_d[i][j] == -5 || a_d[j][i] == -5)
                     fprintf(fpWrite, "[color=red,style = bold] [label = %d, fontcolor = navyblue,"
                                         "fontsize = 24] ", graph->a[i][j]);
 
-                else 
+                else
                     fprintf(fpWrite, "[label = %d] ", graph->a[i][j]);
 
                 if (j == graph->n -1 && i == graph->n-1) {
@@ -1326,10 +1327,10 @@ void makeDotFileForDijkstra (GRAPH *graph, int root, int dest, int dist[], int a
 
 int dijkstra (GRAPH *graph, int root, int dest) {
 
-    int dist[32] = {[0 ... 31] = INT_MAX};          //new way to declare all values of 
+    int dist[32] = {[0 ... 31] = INT_MAX};          //new way to declare all values of
                                                     //dist from 0-31 = INT_MAX
     int parent[32];                         //to store parent node of a vertex
-    int visited[32] = {0};                  //to mark a vertex to be visited or unvisited 
+    int visited[32] = {0};                  //to mark a vertex to be visited or unvisited
                                             //INITIALLY all vertices are unvisited
     int i, j;
     int a_d[32][32];                        //to make a copy of adjacency matrix
@@ -1347,20 +1348,20 @@ int dijkstra (GRAPH *graph, int root, int dest) {
 
         for (i = 0; i < graph->n; i++) {
 
-            int dist_i = dist[u] + graph->a[u][i];              //distance of vertex i via vertex u 
-                                                                
-            if (graph->a[u][i] != 0 && !visited[i] && dist_i < dist[i]) {       
+            int dist_i = dist[u] + graph->a[u][i];              //distance of vertex i via vertex u
+
+            if (graph->a[u][i] != 0 && !visited[i] && dist_i < dist[i]) {
 
                 dist[i] = dist_i;
                 parent[i] = u;
 
-            }       //checking if new path to vertex i via vertex u has shorter length than 
+            }       //checking if new path to vertex i via vertex u has shorter length than
                     //existing length from root
 
         }
 
     }
-    
+
     //copying adjacency matrix into an 2-d array 'a_d'
     for (i = 0; i < graph->n; i++) {
         for (j = 0; j < graph->n; j++) {
@@ -1370,9 +1371,175 @@ int dijkstra (GRAPH *graph, int root, int dest) {
 
     printShortestPathForDijkstra (graph, root, dest, parent, dist[dest], a_d);  //to print shortest path
     makeDotFileForDijkstra (graph, root, dest, dist, a_d);      //to make dot file for dijkstra
-    
+
     return dist[dest];      //returning the shortest distance
 
 }
 
+//dfs program functions begin here
 
+void makeDotFileForDfs (GRAPH *graph, int path[][32], int root) {
+
+    char one[32];
+    char str[32];
+    int n = graph->n;
+    int i,j;
+    int check;
+
+    strcpy(one, graph->fileName);
+    strcpy(str, one);
+    strcat(str, "Dfs.dot");
+
+    FILE *fpWrite = fopen(str, "w");                   //creating/opening a file to write dot form of the adjacency matrix
+    //NOW WE START WRITING DATA IN THE FILE
+
+    fprintf(fpWrite, "graph %s {\n", one);
+
+    //coloring root vertex in green color
+    fprintf(fpWrite, "      ");
+    fprintf(fpWrite, "%d  ", root);
+    fprintf(fpWrite, "[color = %s, style = filled];\n", "green");
+
+    for (i = 0; i < graph->n; i++) {
+
+        check = 0;              //TO CHECK IF INCOMING NODE IS CONNECTED TO ANYONE OR NOT
+
+        for (j = i; j < graph->n; j++) {
+
+            if (graph->a[i][j] != 0) {
+
+                fprintf(fpWrite, "      ");
+                fprintf(fpWrite, "%d -- %d ", i, j);
+
+                if (path[i][j] == -5 || path[j][i] == -5) {
+                    fprintf(fpWrite, "[color=red] ");
+                }
+
+                if (j == graph->n -1 && i == graph->n-1) {
+                    fprintf(fpWrite, "\n");
+                }
+
+                else {
+                    fprintf(fpWrite, ";\n");
+                }
+
+                check = 1;
+
+            }
+
+        }
+        if (check == 0) {       //IF NODE IS NOT CONNECTED TO ANYONE
+
+            fprintf(fpWrite, "      ");
+            fprintf(fpWrite, "%d ", i);
+
+            if (i != graph->n -1) {
+                fprintf(fpWrite, ";\n");
+            }
+
+            else {
+                fprintf(fpWrite, "\n");
+            }
+
+        }
+
+    }
+
+    fprintf(fpWrite, "}");
+    fclose (fpWrite);
+    printf("DOT FILE CREATED SUCCESSFULLY...\n");
+
+}
+
+void dfsUsingStack (GRAPH *graph, int root) {
+
+    int i;                              //loop counter
+    int visited[32] = {0};              //to see if a vertex is visited or not
+    int dfsPath[32][32] = {0};          //to store the edges in the dfs tree
+    int prevNode = -1;
+
+    Stack *stack = createStack (stack);
+
+    push(stack, root);
+    visited[root] = 1;
+
+    printf("PATH IN DFS TREE USING STACKS IS AS FOLLOWS : \n" );
+
+    while (isStackEmpty (stack)) {
+
+        int currentNode = pop (stack);
+        printf("%d ", currentNode);
+        visited[currentNode] = 1;
+
+        if (prevNode != -1) {
+
+            dfsPath[prevNode][currentNode] = -5;
+            dfsPath[currentNode][prevNode] = -5;
+
+        }
+
+        prevNode = currentNode;
+
+        for (i = 0; i < graph->n; i++)
+            if (!visited[i] && graph->a[currentNode][i] != 0) {
+                push (stack, i);
+                visited[i] = 1;
+            }
+
+    }
+
+    printf("\n");
+    makeDotFileForDfs (graph, dfsPath, root);
+
+}
+
+int dfsUsingRecursion_f (GRAPH *graph, int root, int visited[],int prev, int parent[], int dfsPath[][32]) {
+
+    visited[root] = 1;
+
+    //parent[root] = prev;
+
+    if (prev != -1 && graph->a[prev][root] != 0) {
+        dfsPath[prev][root] = -5;
+        dfsPath[root][prev] = -5;
+    }
+    printf("(%d, %d)\n", prev, root);
+
+    prev = root;
+
+    printf("%d ",root);
+    //int index;
+
+    int i;
+    for (i = 0; i < graph->n; i++) {
+
+        // if (root == 8) {
+        //     printf("visited[%d] = %d, graph->a[%d][%d] = %d\n", i, visited[i], root, i, graph->a[root][i]);
+        // }
+        if (!visited[i] && graph->a[root][i] != 0) {
+            //index = i;
+            prev = dfsUsingRecursion_f (graph, i, visited, prev, parent, dfsPath);
+        }
+
+    }
+    // if (hasAnyVertexUnvisited (graph, visited)) {
+    //     dfsUsingRecursion_f (graph, index, visited, prev, parent);
+    // }
+    return prev;
+}
+
+void dfsUsingRecursion (GRAPH *graph, int root) {
+
+    int visited[32] = {0};
+    int parent[32];
+    int prev = -1;
+    int dfsPath[32][32] = {0};
+
+    //parent[root] = -1;
+    printf("PATH IN DFS TREE USING RECURSION IS AS FOLLOWS : \n");
+
+    dfsUsingRecursion_f (graph, root, visited, prev, parent, dfsPath);
+    printf("\n" );
+    makeDotFileForDfs (graph, dfsPath, root);
+
+}

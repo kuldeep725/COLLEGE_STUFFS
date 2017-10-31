@@ -16,7 +16,7 @@ Stack * createStack () {
 
 void push (Stack *stack, int ele) {
 
-	Info *new = (Info *) malloc (sizeof(Info));
+	InfoStack *new = (InfoStack *) malloc (sizeof(InfoStack));
 	new->data = ele;
 
 	if (stack->top == NULL) {
@@ -46,8 +46,8 @@ int pop (Stack *stack) {
 		return INT_MIN;
 
 	}
-	
-	Info *top_m = stack->top;
+
+	InfoStack *top_m = stack->top;
 	int item = stack->top->data;
 
 	stack->top = stack->top->next;

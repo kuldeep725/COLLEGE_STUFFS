@@ -1,15 +1,15 @@
 //headerfile for stacks
 
-typedef struct Info {
+typedef struct InfoStack {
 
 	int data;
-	struct Info *next;
+	struct InfoStack *next;
 
-} Info;
+} InfoStack;
 
 typedef struct Stack {
 
-	struct Info *top;
+	struct InfoStack *top;
 	int length;
 
 } Stack;

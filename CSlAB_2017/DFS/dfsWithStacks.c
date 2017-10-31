@@ -44,7 +44,7 @@ int main () {
 						 printf("EXITING...\n");
 						 break;
 
-				case 4 : printf ("WRONG CHOICE !!");
+				default : printf ("WRONG CHOICE !!");
 					 	 break;
 
 
