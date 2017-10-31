@@ -1,0 +1,41 @@
+graph Egraph_1 {
+      0 -- 2 [color = red] ;
+      0 -- 3 [color = red] ;
+      0 -- 8 [color = red] ;
+      0 -- 10 [color = red] ;
+      0 -- 11 [color = red] ;
+      0 -- 12 [color = red] ;
+      1 -- 4 [color = red] ;
+      1 -- 8 [color = red] ;
+      1 -- 11 [color = red] ;
+      1 -- 14 [color = red] ;
+      2 -- 3 [color = red] ;
+      2 -- 5 [color = red] ;
+      2 -- 9 [color = red] ;
+      2 -- 13 [color = red] ;
+      2 -- 14 [color = red] ;
+      3 -- 8 [color = red] ;
+      3 -- 13 [color = red] ;
+      4 -- 7 [color = red] ;
+      4 -- 8 [color = red] ;
+      4 -- 13 [color = red] ;
+      5 -- 6 [color = red] ;
+      5 -- 9 [color = red] ;
+      5 -- 11 [color = red] ;
+      6 -- 10 [color = red] ;
+      6 -- 11 [color = red] ;
+      6 -- 13 [color = red] ;
+      7 -- 10 [color = red] ;
+      7 -- 13 [color = red] ;
+      7 -- 14 [color = red] ;
+      8 -- 12 [color = red] ;
+      8 -- 14 [color = red] ;
+      9 -- 13 [color = red] ;
+      9 -- 14 [color = red] ;
+      10 -- 14 [color = red] ;
+      11 -- 13 [color = red] ;
+      11 -- 14 [color = red] ;
+      12 ;
+      13 -- 14 [color = red] ;
+      14 
+}
