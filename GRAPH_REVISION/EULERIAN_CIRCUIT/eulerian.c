@@ -27,7 +27,7 @@ int main () {
 	printf("TELL ME THE STARTING POINT OF THE CYCLE : \n");
 	scanf("%d", &starting_node);
 
-	if (IsDegreeEven (graph, degree)) {					//checking if the degree of 
+	if (isDegreeEven (graph, degree)) {					//checking if the degree of 
 												//all the vertices is even or not
 		printf("All vertices have even degree.\n");
 		//setIsolatedVertexVisited (graph);

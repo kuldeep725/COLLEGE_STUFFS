@@ -60,7 +60,7 @@ int deQueue (Queue *queue) {
 }
 
 //checking if the queue is empty or not
-int IsQueueEmpty (Queue *queue) {
+int isQueueEmpty (Queue *queue) {
 
 	if (queue->rear == NULL) {
 		//printf("**QUEUE IS EMPTY**\n");
