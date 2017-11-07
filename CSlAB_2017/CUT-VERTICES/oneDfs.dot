@@ -1,0 +1,19 @@
+graph one {
+      0  [color = green, style = filled];
+      0 -- 1 [color=red] ;
+      0 -- 5 ;
+      0 -- 8 ;
+      0 -- 9 ;
+      1 -- 4 [color=red] ;
+      1 -- 5 ;
+      1 -- 7 ;
+      2 -- 4 [color=red] ;
+      2 -- 9 [color=red] ;
+      3 -- 8 [color=red] ;
+      4 -- 7 ;
+      5 -- 9 [color=red] ;
+      6 -- 9 [color=red] ;
+      7 -- 8 [color=red] ;
+      8 -- 9 [color=red] ;
+      9 
+}

@@ -1,17 +1,17 @@
 graph dfs {
-      2  [color = green, style = filled];
+      0  [color = green, style = filled];
       0 -- 1 [color=red] ;
       0 -- 8 [color=red] ;
       1 ;
       2 -- 3 [color=red] ;
       2 -- 4 [color=red] ;
       2 -- 5 ;
-      2 -- 8 ;
+      2 -- 8 [color=red] ;
       3 ;
       4 -- 7 [color=red] ;
       5 -- 6 [color=red] ;
       6 -- 7 [color=red] ;
-      6 -- 8 [color=red] ;
+      6 -- 8 ;
       7 ;
       8 
 }

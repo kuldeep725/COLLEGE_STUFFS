@@ -1,13 +1,16 @@
-hamiltonian.out : queue.o graph.o  hamiltonian.o
-	gcc hamiltonian.o queue.o graph.o -o hamiltonian.out
+abc.out : stack.o graph.o queue.o abc.o
+	gcc abc.o stack.o graph.o queue.o -o abc.out
 
-hamiltonian.o : hamiltonian.c graph.h queue.h
-	gcc -c hamiltonian.c -std=c11 -g
+abc.o : abc.c
+	gcc -c abc.c -std=c11 -g
 
-queue.o : queue.c queue.h
+stack.o : stack.c
+	gcc -c stack.c -g
+
+queue.o : queue.c
 	gcc -c queue.c -g
 
-graph.o : graph.c queue.h graph.h
+graph.o : graph.c
 	gcc -c graph.c -g
 
 clean:

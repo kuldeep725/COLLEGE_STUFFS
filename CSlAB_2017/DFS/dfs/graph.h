@@ -70,6 +70,4 @@ void makeDotFileForDijkstra (GRAPH *, int , int , int [], int [][32]);
 int dijkstra (GRAPH *, int, int);
 
 void dfsUsingStack (GRAPH *, int);
-void dfsUsingRecursion (GRAPH *, int, int[][32]);
-
-void findCutVertices (GRAPH *);
+void dfsUsingRecursion (GRAPH *, int);
