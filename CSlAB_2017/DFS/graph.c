@@ -1457,11 +1457,13 @@ void dfsUsingStack (GRAPH *graph, int root) {
     int visited[32] = {0};              //to see if a vertex is visited or not
     int dfsPath[32][32] = {0};          //to store the edges in the dfs tree
     int prevNode = -1;
+    int parent[32];
 
     Stack *stack = createStack (stack);
 
     push(stack, root);
     visited[root] = 1;
+    parent[root] = -1;
 
     printf("PATH IN DFS TREE USING STACKS IS AS FOLLOWS : \n" );
 
@@ -1470,13 +1472,22 @@ void dfsUsingStack (GRAPH *graph, int root) {
         int currentNode = pop (stack);
         printf("%d ", currentNode);
         visited[currentNode] = 1;
+        //printf("parent[%d] = %d\n", currentNode, parent[currentNode]);
 
-        if (prevNode != -1) {
+        if (parent[currentNode] != -1) {
+
+            dfsPath[currentNode][parent[currentNode]] = -5;
+            dfsPath[parent[currentNode]][currentNode] = -5;
+        
+        }
+            
+
+        /*if (prevNode != -1) {
 
             dfsPath[prevNode][currentNode] = -5;
             dfsPath[currentNode][prevNode] = -5;
 
-        }
+        }*/
 
         prevNode = currentNode;
 
@@ -1484,6 +1495,7 @@ void dfsUsingStack (GRAPH *graph, int root) {
             if (!visited[i] && graph->a[currentNode][i] != 0) {
                 push (stack, i);
                 visited[i] = 1;
+                parent[i] = currentNode;
             }
 
     }
@@ -1493,7 +1505,7 @@ void dfsUsingStack (GRAPH *graph, int root) {
 
 }
 
-int dfsUsingRecursion_f (GRAPH *graph, int root, int visited[],int prev, int parent[], int dfsPath[][32]) {
+void dfsUsingRecursion_f (GRAPH *graph, int root, int visited[],int prev, int parent[], int dfsPath[][32]) {
 
     visited[root] = 1;
 
@@ -1503,7 +1515,7 @@ int dfsUsingRecursion_f (GRAPH *graph, int root, int visited[],int prev, int par
         dfsPath[prev][root] = -5;
         dfsPath[root][prev] = -5;
     }
-    printf("(%d, %d)\n", prev, root);
+    //printf("(%d, %d)\n", prev, root);
 
     prev = root;
 
@@ -1518,14 +1530,14 @@ int dfsUsingRecursion_f (GRAPH *graph, int root, int visited[],int prev, int par
         // }
         if (!visited[i] && graph->a[root][i] != 0) {
             //index = i;
-            prev = dfsUsingRecursion_f (graph, i, visited, prev, parent, dfsPath);
+            /*prev = */dfsUsingRecursion_f (graph, i, visited, prev, parent, dfsPath);
         }
 
     }
     // if (hasAnyVertexUnvisited (graph, visited)) {
     //     dfsUsingRecursion_f (graph, index, visited, prev, parent);
     // }
-    return prev;
+    //return prev;
 }
 
 void dfsUsingRecursion (GRAPH *graph, int root) {

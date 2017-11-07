@@ -11,7 +11,8 @@ int main () {
 
 	int root;
 	int choice;
-
+	int dfsPath[32][32] = {0};
+	
 	GRAPH *graph = (GRAPH *) malloc(sizeof(GRAPH));
 	graph = readAdjacentMatrix (graph);
 
@@ -38,7 +39,7 @@ int main () {
 				case 1 : dfsUsingStack (graph, root);
 						 break;
 
-				case 2 : dfsUsingRecursion (graph, root);
+				case 2 : dfsUsingRecursion (graph, root, dfsPath);
 						 break;
 				case 3 :
 						 printf("EXITING...\n");

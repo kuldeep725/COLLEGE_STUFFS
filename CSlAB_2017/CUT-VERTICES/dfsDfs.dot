@@ -1,17 +1,10 @@
 graph dfs {
       0  [color = green, style = filled];
       0 -- 1 [color=red] ;
-<<<<<<< HEAD
-      0 -- 8 ;
-      1 ;
-      2 -- 3 [color=red] ;
-      2 -- 4 ;
-=======
       0 -- 8 [color=red] ;
       1 ;
       2 -- 3 [color=red] ;
       2 -- 4 [color=red] ;
->>>>>>> 21345d35cd5e4822c99d9e4c3e9a5dc3339a451d
       2 -- 5 ;
       2 -- 8 [color=red] ;
       3 ;

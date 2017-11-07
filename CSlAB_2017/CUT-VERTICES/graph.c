@@ -1467,7 +1467,6 @@ void makeDotFileForDfs (GRAPH *graph, int path[][32], int root) {
 
 }
 
-//dfs program functions begin here
 void dfsUsingStack (GRAPH *graph, int root) {
 
     int i;                              //loop counter
