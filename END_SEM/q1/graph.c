@@ -14,9 +14,9 @@
 
 int BFS (GRAPH *graph, int root, int dest) {
 
-    int visited[32] = {0};          //making all to be unchecked (0)
+    int visited[52] = {0};          //making all to be unchecked (0)
     int i;
-    int level[32];
+    int level[52];
 
     Queue *queue = createQueue ();      //creating queue
 
@@ -48,7 +48,7 @@ int BFS (GRAPH *graph, int root, int dest) {
 
     }
 
-    return 0;
+    return -1;
 
 }
 
@@ -159,7 +159,10 @@ GRAPH * readAdjacentMatrix (GRAPH *graph) {
     fscanf(fpRead, "%d", &graph->n);       //to read number of rows/columns in the adjacency matrix
 
     int i, j;               //loop variables
-
+    for (i = 0; i < graph->n; i++) {
+        graph->a[i] = (int *) malloc(sizeof(int) * graph->n);
+    }
+    
     for (i = 0; i < graph->n; i++)
         for (j = 0; j < graph->n; j++)
             fscanf(fpRead, "%1d", &(graph->a[i][j]));        //taking input as n*n adjacency matrix from the input file
@@ -750,6 +753,7 @@ int calculateNumberOfConnectedComponents (GRAPH *graph) {
     }*/
 
     //makeDotFileForCountingPieces (graph, edgeColor);          //uncomment to make dot file
+    printf("noOfConnectedComponents = %d\n", noOfConnectedComponents);
     return noOfConnectedComponents;
 
 }
@@ -1619,6 +1623,100 @@ void findCutVertices (GRAPH *graph) {
     // }
     for (i = 0; i < k; i++) {
         printf("cut_vertices[%d] = %d\n", i, cut_vertices[i]);
+    }
+
+}
+
+void createOutputFile (GRAPH *graph, int *diag[52]) {
+
+    char str[32];
+    strcat(graph->fileName,"-distance.txt");
+    FILE *fpOut = fopen(graph->fileName, "w");
+
+    fprintf(fpOut, "-----DIAGONAL MATRIX----- \n");
+
+    int i, j;
+
+    for (i = 0; i < graph->n; i++) {
+        for (j = 0; j < graph->n; j++) {
+            fprintf(fpOut, "%d ", diag[i][j]);
+        }
+        fprintf(fpOut, "\n");
+    }
+    printf("OUTPUT FILE FOR DIAGONAL MATRIX IS FORMED.\n");
+    fclose(fpOut);
+
+}
+
+void freeMem (GRAPH *graph) {
+
+    int i; 
+    for (i = 0; i < graph->n; i++) {
+        free (graph->a[i]);
+    }
+
+}
+
+void findDistance (GRAPH *graph) {
+
+    int i, j;
+    int *distanceMatrix[graph->n];
+
+    for (i = 0; i < graph->n; i++) {
+        distanceMatrix[i] = (int *) malloc(sizeof(int) * graph->n);
+    }
+    //printf("graph->n =  %d\n", graph->n);
+    for (i = 0; i < graph->n; i++) {
+        //printf("%d\n", i);
+        for (j = 0; j < graph->n; j++) {
+            //printf("(%d, %d)\n", i, j);
+             distanceMatrix[i][j] = BFS (graph, i, j);
+             //printf("%d ",distanceMatrix[i][j] );
+            //printf("%d ", BFS(graph, i ,j));
+
+        }
+        //printf("\n");
+    }
+    createOutputFile (graph, distanceMatrix);
+        
+    float average = 0;
+    int count = 0;
+    for (i = 0; i < graph->n; i++) {
+        for (j = i; j < graph->n; j++) {
+            if (distanceMatrix[i][j] == -1 || distanceMatrix[i][j] == 0) continue;
+            average += distanceMatrix[i][j];
+            count++;
+        }
+    }
+    printf("averageEarlier = %f\n", average);
+    average = average / count;
+    printf("averageAfter = %f\n", average);
+    printf("count = %d\n", count);
+        // printf("calculateNumberOfConnectedComponents = %d\n", calculateNumberOfConnectedComponents(graph));
+        // if (calculateNumberOfConnectedComponents(graph) == 1) {
+
+        //average using only upper half triangle so that loop will run lesser
+        // for (i = 0; i < graph->n; i++) {
+        //     for (j = i; j < graph->n; j++) {
+        //         if (distanceMatrix[i][j] == -1 || distanceMatrix[i][j] == 0) continue;
+        //         average += distanceMatrix[i][j];
+        //         count++;
+        //     }
+        // }
+    //     if (calculateNumberOfConnectedComponents(graph) == 1) {
+    //         printf("averageEarlier = %f\n", average);
+    //         average = average / count;
+    //         printf("averageAfter = %f\n", average);
+    //         printf("count = %d\n", count);
+
+    //     }
+    // else {
+    //     printf("GRAPH IS NOT CONNECTED.\n");
+    // }
+    freeMem(graph);
+
+    for (i = 0; i < graph->n; i++) {
+        free(distanceMatrix[i]);
     }
 
 }

@@ -14,9 +14,9 @@
 
 int BFS (GRAPH *graph, int root, int dest) {
 
-    int visited[32] = {0};          //making all to be unchecked (0)
+    int visited[52] = {0};          //making all to be unchecked (0)
     int i;
-    int level[32];
+    int level[52];
 
     Queue *queue = createQueue ();      //creating queue
 
@@ -48,7 +48,7 @@ int BFS (GRAPH *graph, int root, int dest) {
 
     }
 
-    return 0;
+    return -1;
 
 }
 
@@ -159,7 +159,10 @@ GRAPH * readAdjacentMatrix (GRAPH *graph) {
     fscanf(fpRead, "%d", &graph->n);       //to read number of rows/columns in the adjacency matrix
 
     int i, j;               //loop variables
-
+    for (i = 0; i < graph->n; i++) {
+        graph->a[i] = (int *) malloc(sizeof(int) * graph->n);
+    }
+    
     for (i = 0; i < graph->n; i++)
         for (j = 0; j < graph->n; j++)
             fscanf(fpRead, "%1d", &(graph->a[i][j]));        //taking input as n*n adjacency matrix from the input file
@@ -750,6 +753,7 @@ int calculateNumberOfConnectedComponents (GRAPH *graph) {
     }*/
 
     //makeDotFileForCountingPieces (graph, edgeColor);          //uncomment to make dot file
+    printf("noOfConnectedComponents = %d\n", noOfConnectedComponents);
     return noOfConnectedComponents;
 
 }
@@ -1132,65 +1136,7 @@ void makeDotFileForSixColoring (GRAPH *graph, int vertexColor[]) {
 
 }
 
-int isColorSame (GRAPH *graph, int vertexColor[], int v) {
 
-    int i;
-
-    for (i = 0; i < graph->n; ++i)
-        if ((graph->a[v][i] == 1 || graph->a[i][v] == 1) && vertexColor[v] == vertexColor[i]) return i;             //color of vertex adjacent
-                                                                    //to v has same color
-    return -1;               //no adjacent vertex of v has the same color as v
-
-}
-
-void coloringWithSixColors (GRAPH *graph) {
-
-    int color_index = 0;                //to store
-    int vertexColor [32];
-    int i;
-
-    for (i = 0; i < graph->n; i++) vertexColor[i] = -1;
-
-    int root = 0;
-    int total_colors = 6;
-
-    vertexColor[root] = color_index++;
-
-    int visited[32] = {0};          //making all to be unchecked (0)
-
-    visited[root] = 1;              //making root as visited
-    int j;
-
-    for (j = 0; j < graph->n; j++) {
-
-        for (i = 0; i < graph->n; i++) {
-
-            if (!visited[i] && graph->a[j][i] != 0) {
-
-                //enQueue (queue, i);
-                visited[i] = 1;         //marking node as visited
-                vertexColor[i] = color_index % total_colors;
-                printf("\nisColorSame = %d\n", isColorSame (graph, vertexColor, i));
-                while (isColorSame (graph, vertexColor, i) != -1) {      //checking if the adjacent vertices have same color or not
-                    printf("inside loop -> %d\n", i);
-                    vertexColor[i] = (color_index++) % total_colors;
-                }
-                printf("COLORING OF %d : ", i);
-                printf("vertexColor[%d] = %d\n", i, vertexColor[i]);
-                color_index = 0;
-
-            }
-
-        }
-
-    }
-
-    // for (i = 0; i < graph->n; i++) {
-    //     printf("vertexColor[%d] = %d\n", i, vertexColor[i]);
-    // }
-    makeDotFileForSixColoring (graph, vertexColor);
-
-}
 
 //dijkstra program functions begin here
 
@@ -1620,5 +1566,296 @@ void findCutVertices (GRAPH *graph) {
     for (i = 0; i < k; i++) {
         printf("cut_vertices[%d] = %d\n", i, cut_vertices[i]);
     }
+
+}
+
+void createOutputFile (GRAPH *graph, int *diag[52]) {
+
+    char str[32];
+    strcat(graph->fileName,"-distance.txt");
+    FILE *fpOut = fopen(graph->fileName, "w");
+
+    fprintf(fpOut, "-----DIAGONAL MATRIX----- \n");
+
+    int i, j;
+
+    for (i = 0; i < graph->n; i++) {
+        for (j = 0; j < graph->n; j++) {
+            fprintf(fpOut, "%d ", diag[i][j]);
+        }
+        fprintf(fpOut, "\n");
+    }
+    printf("OUTPUT FILE FOR DIAGONAL MATRIX IS FORMED.\n");
+    fclose(fpOut);
+
+}
+
+void freeMem (GRAPH *graph) {
+
+    int i; 
+    for (i = 0; i < graph->n; i++) {
+        free (graph->a[i]);
+    }
+
+}
+
+void findDistance (GRAPH *graph) {
+
+    int i, j;
+    int *distanceMatrix[graph->n];
+
+    for (i = 0; i < graph->n; i++) {
+        distanceMatrix[i] = (int *) malloc(sizeof(int) * graph->n);
+    }
+    //printf("graph->n =  %d\n", graph->n);
+    for (i = 0; i < graph->n; i++) {
+        //printf("%d\n", i);
+        for (j = 0; j < graph->n; j++) {
+            //printf("(%d, %d)\n", i, j);
+             distanceMatrix[i][j] = BFS (graph, i, j);
+             //printf("%d ",distanceMatrix[i][j] );
+            //printf("%d ", BFS(graph, i ,j));
+
+        }
+        //printf("\n");
+    }
+    createOutputFile (graph, distanceMatrix);
+        
+    float average = 0;
+    int count = 0;
+    for (i = 0; i < graph->n; i++) {
+        for (j = i; j < graph->n; j++) {
+            if (distanceMatrix[i][j] == -1 || distanceMatrix[i][j] == 0) continue;
+            average += distanceMatrix[i][j];
+            count++;
+        }
+    }
+    printf("averageEarlier = %f\n", average);
+    average = average / count;
+    printf("averageAfter = %f\n", average);
+    printf("count = %d\n", count);
+        // printf("calculateNumberOfConnectedComponents = %d\n", calculateNumberOfConnectedComponents(graph));
+        // if (calculateNumberOfConnectedComponents(graph) == 1) {
+
+        //average using only upper half triangle so that loop will run lesser
+        // for (i = 0; i < graph->n; i++) {
+        //     for (j = i; j < graph->n; j++) {
+        //         if (distanceMatrix[i][j] == -1 || distanceMatrix[i][j] == 0) continue;
+        //         average += distanceMatrix[i][j];
+        //         count++;
+        //     }
+        // }
+    //     if (calculateNumberOfConnectedComponents(graph) == 1) {
+    //         printf("averageEarlier = %f\n", average);
+    //         average = average / count;
+    //         printf("averageAfter = %f\n", average);
+    //         printf("count = %d\n", count);
+
+    //     }
+    // else {
+    //     printf("GRAPH IS NOT CONNECTED.\n");
+    // }
+    freeMem(graph);
+
+    for (i = 0; i < graph->n; i++) {
+        free(distanceMatrix[i]);
+    }
+
+}
+
+void makeDotFileForVertexColor (GRAPH *graph, int vertexColor[]) {
+
+    char one[32];
+    char str[32];
+    int n = graph->n;
+    int i,j;
+    int check;
+    char color[][25] = {"red", "blue", "green", "cyan", "orange", "yellow","brown",
+                        "magenta", "cornflowerblue", "aliceblue", "aquamarine4", 
+                        "aquamarine", "indigo", "green4", "gray63"};
+
+    strcpy(one, graph->fileName);
+    strcpy(str, one);
+    strcat(str, "-Colored.dot");
+
+    FILE *fpWrite = fopen(str, "w");                   //creating/opening a file to write dot form of the adjacency matrix
+    //NOW WE START WRITING DATA IN THE FILE
+
+    fprintf(fpWrite, "graph %s {\n", one);
+
+    for (i = 0; i < graph->n; i++) {
+
+        check = 0;              //TO CHECK IF INCOMING NODE IS CONNECTED TO ANYONE OR NOT
+
+        for (j = i; j < graph->n; j++) {
+
+            if (graph->a[i][j] != 0) {
+
+                fprintf(fpWrite, "      ");
+                fprintf(fpWrite, "%d -- %d ", i, j);
+
+                if (j == graph->n -1 && i == graph->n-1) {
+                    fprintf(fpWrite, "\n");
+                }
+
+                else {
+                    fprintf(fpWrite, ";\n");
+                }
+
+                check = 1;
+
+            }
+
+        }
+        if (check == 0) {       //IF NODE IS NOT CONNECTED TO ANYONE
+
+            fprintf(fpWrite, "      ");
+            fprintf(fpWrite, "%d ", i);
+
+            if (i != graph->n -1) {
+                fprintf(fpWrite, ";\n");
+            }
+
+            else {
+                fprintf(fpWrite, "\n");
+            }
+
+        }
+
+    }
+    for (i = 0; i < graph->n; i++) {
+
+        fprintf(fpWrite, "      ");
+        fprintf(fpWrite, "%d  ", i);
+        fprintf(fpWrite, "[color = %s, style = filled] ", color[vertexColor[i]]);
+
+        if (i == graph->n - 1)
+            fprintf(fpWrite, "\n");
+        else
+            fprintf(fpWrite, ";\n");
+
+
+    }
+
+    fprintf(fpWrite, "}");
+    fclose (fpWrite);
+    printf("DOT FILE CREATED SUCCESSFULLY...\n");
+
+}
+
+int isColorSame (GRAPH *graph, int vertexColor[], int v) {
+
+    int i;
+
+    for (i = 0; i < graph->n; ++i)
+        if ((graph->a[v][i] == 1 || graph->a[i][v] == 1) && vertexColor[v] == vertexColor[i]) return i;             //color of vertex adjacent
+                                                                    //to v has same color
+    return -1;               //no adjacent vertex of v has the same color as v
+
+}
+
+void coloringWithSixColors (GRAPH *graph) {
+
+    int color_index = 0;                //to store
+    int vertexColor [32];
+    int i;
+
+    for (i = 0; i < graph->n; i++) vertexColor[i] = -1;
+
+    int root = 0;
+    int total_colors = 6;
+
+    vertexColor[root] = color_index++;
+
+    int visited[32] = {0};          //making all to be unchecked (0)
+
+    visited[root] = 1;              //making root as visited
+    int j;
+
+    for (j = 0; j < graph->n; j++) {
+
+        for (i = 0; i < graph->n; i++) {
+
+            if (!visited[i] && graph->a[j][i] != 0) {
+
+                //enQueue (queue, i);
+                visited[i] = 1;         //marking node as visited
+                vertexColor[i] = color_index % total_colors;
+                printf("\nisColorSame = %d\n", isColorSame (graph, vertexColor, i));
+                while (isColorSame (graph, vertexColor, i) != -1) {      //checking if the adjacent vertices have same color or not
+                    printf("inside loop -> %d\n", i);
+                    vertexColor[i] = (color_index++) % total_colors;
+                }
+                printf("COLORING OF %d : ", i);
+                printf("vertexColor[%d] = %d\n", i, vertexColor[i]);
+                color_index = 0;
+
+            }
+
+        }
+
+    }
+
+    // for (i = 0; i < graph->n; i++) {
+    //     printf("vertexColor[%d] = %d\n", i, vertexColor[i]);
+    // }
+    makeDotFileForSixColoring (graph, vertexColor);
+
+}
+int isColorSameNew (GRAPH *graph, int vertexColor[], int v) {
+
+    int i;
+
+    for (i = 0; i < graph->n; ++i) {
+        //if (i ==49)printf("BFS(graph, %d, %d) = %d\n",v, i, BFS(graph, v, i) );
+        if ((graph->a[i][v] == 1 || graph->a[v][i] == 1) && vertexColor[v] == vertexColor[i]) return i;             //color of vertex adjacent
+                                                                    //to v has same color
+    }
+    return -1;               //no adjacent vertex of v has the same color as v
+
+}
+
+       
+void colorVertex (GRAPH *graph) {
+
+    int color_index = 0;
+    int vertexColor [52];
+    int i;
+
+    for (i = 0; i < graph->n; i++) vertexColor[i] = 14;
+
+    int root = 0;
+    int total_colors = 20;
+
+    vertexColor[root] = color_index++;
+
+    int visited[32] = {0};          //making all to be unchecked (0)
+
+    visited[root] = 1;              //making root as visited
+    int j;
+
+    for (i = 0; i < graph->n; i++) {
+        int flag = 0;
+                visited[i] = 1;         //marking node as visited
+                vertexColor[i] = color_index++ % total_colors;
+                //printf("\nisColorSame = %d\n", isColorSameNew (graph, vertexColor, i));
+                while (isColorSameNew (graph, vertexColor, i) != -1) {      //checking if the adjacent vertices have same color or not
+                    //printf("inside loop -> %d\n", i);
+                    //printf("vertexColor[%d] = %d\n", i, vertexColor[i]);
+                    //printf("vertexColor[%d] = %d\n", isColorSame(graph, vertexColor, i), vertexColor[isColorSame(graph, vertexColor, i)]);
+                    vertexColor[i] = (color_index++) % total_colors;
+                }
+                //printf("COLORING OF %d : ", i);
+                //printf("vertexColor[%d] = %d\n", i, vertexColor[i]);
+                //color_index = 0;
+
+
+    }
+    printf("\n");
+    for (i = 0;i < graph->n; i++) {
+        printf("vertexColor[%d] = %d ", i, vertexColor[i]);
+        if (i % 5 == 0) printf("\n");
+    }
+    makeDotFileForVertexColor (graph, vertexColor);
 
 }
