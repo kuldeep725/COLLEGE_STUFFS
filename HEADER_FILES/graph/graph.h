@@ -69,7 +69,9 @@ void printShortestPathForDijkstra (GRAPH *, int , int , int [], int , int [][32]
 void makeDotFileForDijkstra (GRAPH *, int , int , int [], int [][32]);
 int dijkstra (GRAPH *, int, int);
 
+//(10) dfs program functions begin here
 void dfsUsingStack (GRAPH *, int);
+void dfsUsingRecursion_f (GRAPH *, int , int [],int , int [], int[][32])
 void dfsUsingRecursion (GRAPH *, int, int[][32]);
 
 void findCutVertices (GRAPH *);
